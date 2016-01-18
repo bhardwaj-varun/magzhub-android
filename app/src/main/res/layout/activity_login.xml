@@ -1,0 +1,62 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mrinalika.dell.com.hfad.LoginActivity"
+    android:orientation="vertical">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        />
+
+    <EditText
+        android:text=""
+        android:id="@+id/email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textColorHint="@color/myTextColor"
+        android:hint="username"
+        android:layout_margin="12dp"
+        android:textColor="@color/myNavigationColor">
+    </EditText>
+    <!--<TextView
+        android:id="@+id/tv2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:layout_margin="10dp"
+        android:textColor="@color/myNavigationColor"
+        />-->
+    <EditText
+        android:text=""
+        android:id="@+id/password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="password"
+        android:textColorHint="@color/myTextColor"
+        android:layout_margin="12dp"
+        android:inputType="textPassword"
+        android:textColor="@color/myNavigationColor">
+    </EditText>
+    <!--<Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ShowPassword"
+        android:id="@+id/showpassword"
+        />-->
+    <Button
+        android:text="Login"
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        >
+    </Button>
+
+
+</LinearLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="mrinalika.dell.com.hfad" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/MyMaterialTheme" >
+        <activity
+            android:name=".AfterLogin"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".Home"
+            android:label="@string/title_activity_home"
+            android:parentActivityName=".AfterLogin" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AfterLogin" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".Friend"
+            android:label="@string/title_activity_friend"
+            android:parentActivityName=".AfterLogin" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AfterLogin" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".Message"
+            android:label="@string/title_activity_message"
+            android:parentActivityName=".AfterLogin" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AfterLogin" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".Launcher"
+            android:label="@string/title_activity_launcher" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".Categories"
+            android:label="@string/title_activity_categories" >
+        </activity>
+    </application>
+
+</manifest>
