@@ -17,6 +17,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +30,14 @@ public class LoginActivity extends ActionBarActivity {
     EditText et,pass;
     ProgressDialog pdialog;
     SessionManagement sessionManagement;
-
+    static CookieManager msCookieManager= new CookieManager();
+    static CookieHandler cookieHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
      //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
        // toolbar.setLogo(R.mipmap.ic_magzhub_logo);
         createVariable();
@@ -41,6 +45,7 @@ public class LoginActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 new AsyncTaskParseJson().execute();
+                cookieHandler.setDefault(msCookieManager);
             }
         });
     }

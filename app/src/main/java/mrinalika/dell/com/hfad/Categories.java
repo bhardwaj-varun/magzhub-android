@@ -1,6 +1,7 @@
 package mrinalika.dell.com.hfad;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,17 +32,28 @@ public class Categories extends ActionBarActivity {
         setContentView(R.layout.activity_categories);
         Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+       // getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setLogo(R.mipmap.ic_magzhub_logo);
-        toolbar.setTitle("Magzhub");
+        toolbar.setTitle("Categories");
 
         CategoriesList= new ArrayList<Category>();
         new AsyncTaskfroCategories().execute();
 
         ListView listview=(ListView)findViewById(R.id.list);
         adapter=new CategoryAdapter(getApplicationContext(),R.layout.category_row,CategoriesList);
+        listview.setAdapter(adapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent= new Intent(Categories.this,Getting_Magazines.class);
+                intent.putExtra("CategoryId",CategoriesList.get(position).getId());
+                startActivity(intent);
+                Log.e(TAG, "Categry Id " + CategoriesList.get(position).getId());
+
+            }
+        });
     }
 
     @Override

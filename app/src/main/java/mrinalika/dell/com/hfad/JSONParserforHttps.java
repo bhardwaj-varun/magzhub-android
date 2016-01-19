@@ -8,8 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.HttpCookie;
 import java.net.URL;
@@ -26,11 +28,12 @@ public class JSONParserforHttps {
     static HttpsURLConnection connection;
     private String TAG="JSONParserforHttps";
     static final String COOKIES_HEADER = "Set-Cookie";
-    static CookieManager msCookieManager;
+
     static boolean firstConnection=true;
     static Map<String, List<String>> headerFields;
     static List<String> cookiesHeader;
-    static CookieHandler cookieHandler;
+
+
     public String convertNameValuePairToString(List<NameValuePair> params) {
         StringBuilder result = new StringBuilder();
         boolean first = true;
@@ -54,24 +57,34 @@ public class JSONParserforHttps {
      public JSONArray makingconnectionForJSONArray(String stringUrl, List<NameValuePair> params, String method) {
          //HttpsURLConnection connection;
         StringBuilder sb3= new StringBuilder();
+         JSONArray jsonArray=null;
         try{
+
             URL url= new URL(stringUrl);
             connection= (HttpsURLConnection)url.openConnection();
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG,"error in HttpURlCOnnectionfor JSONArray");
+            Log.e(TAG, "error in HttpURlCOnnectionfor JSONArray");
         }
         String parameterString= convertNameValuePairToString(params);
         try{
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
+            if(firstConnection==false) {
+                Log.e(TAG, "cookie length" + LoginActivity.msCookieManager.getCookieStore().getCookies().size());
+                if (LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
+                    //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
+                    connection.setRequestProperty("Cookie",
+                            TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
+                }
+            }
             connection.connect();
             //send string to server
             DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
             wr.writeBytes(parameterString);
         }
         catch (Exception e) {
-            Log.e(TAG,"error in connection.connect");
+            e.printStackTrace();
         }
         //getting response from server
         try{
@@ -89,17 +102,19 @@ public class JSONParserforHttps {
                     Log.e("HTTPS connection : ","Json String "+ sb3.toString());
             }
         }catch(Exception e){
-            Log.e(TAG,"inputstream error ");
+            Log.e(TAG, "inputstream error ");
+            e.printStackTrace();
         }
 
         try {
-            JSONArray jsonArray=new JSONArray(sb3.toString());
+            jsonArray=new JSONArray(sb3.toString());
                 return jsonArray;
 
         }catch (Exception e) {
-
-            return null;
-        }}
+            e.printStackTrace();
+            return jsonArray;
+        }
+     }
 
 
     public JSONObject makingConnectionForJsonObject(String stringUrl, List<NameValuePair> params,String method  ){
@@ -113,54 +128,76 @@ public class JSONParserforHttps {
         }
         String paramString=convertNameValuePairToString(params);
         try {
-            if(firstConnection==false) {
-                Log.e(TAG, "cookie length" + msCookieManager.getCookieStore().getCookies().size());
-                if (msCookieManager.getCookieStore().getCookies().size() > 0) {
-                    //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
-                    connection.setRequestProperty("Cookie",
-                            TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
-                }
-            }
+
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
-           /* c.setRequestProperty("Content-length", "0");
-            c.setUseCaches(false);
-            c.setAllowUserInteraction(false);
-            c.setConnectTimeout(timeout);
-            c.setReadTimeout(timeout);
-            */
-            connection.connect();
-            if(firstConnection){
+            if(firstConnection==false) {
+                Log.e(TAG, "cookie length" + LoginActivity.msCookieManager.getCookieStore().getCookies().size());
+                if (LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
+                    //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
+                    connection.setRequestProperty("Cookie",
+                            TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
+                }
+            }
+           connection.connect();
+
+            try{
+                DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
+                wr.writeBytes(paramString);
+            }catch (Exception e) {
+                Log.e(TAG, "error in DataOutputStream ");
+                e.printStackTrace();
+            } if(firstConnection){
                // msCookieManager.getInstance().setAcceptCookie(true);
                // cookieHandler.setDefault(msCookieManager);
                 headerFields = connection.getHeaderFields();
                 Log.e(TAG,connection.getHeaderFields().toString());
-                cookiesHeader = headerFields.get(COOKIES_HEADER);
-                if(cookiesHeader != null)
-                {
-                    for (String cookie : cookiesHeader)
-                    {
-                        msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                    }
-                }
+                try{
+                int responseCode = connection.getResponseCode();
+                Log.d(TAG,"responseCode ->" + responseCode);
 
+                if(responseCode== HttpsURLConnection.HTTP_OK)
+                {
+                    Map<String, List<String>> headerFields = connection.getHeaderFields();
+                    List<String> cookiesHeader = headerFields.get("Set-Cookie");
+                    Log.e(TAG,"cookieHeader"+cookiesHeader);
+                    if(cookiesHeader != null)
+                    {
+                        try{for (String cookie : cookiesHeader)
+                        {
+                            LoginActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                        }}catch (Exception e){
+                            e.printStackTrace();
+                            Log.e(TAG,"error in  msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));");
+                        }
+                    }}
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    sb.toString();
+                    Log.e("HTTPS connection : ", "Json String " + sb.toString());
+                }catch(Exception e){
+                    e.printStackTrace();}
                 firstConnection=false;
             }
-            //send string to server
         }catch (Exception e) {
-            Log.e(TAG,"error in connection.connect");
+            Log.e(TAG, "error in connection.connect");
             e.printStackTrace();
         }
-        try{
+        /*try{
             DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
             wr.writeBytes(paramString);
         }catch (Exception e) {
-            Log.e(TAG,"error in DataOutputStream ");
+            Log.e(TAG, "error in DataOutputStream ");
             e.printStackTrace();
-        }
+        }*/
 
         //getting response from server
-        try{
+       /* try{
             int status = connection.getResponseCode();
             Log.e(TAG,"status"+status);
             switch (status) {
@@ -179,13 +216,11 @@ public class JSONParserforHttps {
             Log.e(TAG,"inputstream error ");
             e.printStackTrace();
         }
-
+*/
         try {
             JSONObject jsonObject=new JSONObject(sb.toString());
             return jsonObject;
-
-        }catch (Exception e) {
-
+      }catch (Exception e) {
             return null;
         }
     }
@@ -200,11 +235,11 @@ public class JSONParserforHttps {
             Log.e(TAG, "Error in url connection in GETJSONARRAY");
         }
         try{
-            if(msCookieManager.getCookieStore().getCookies().size() > 0)
+            if(LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0)
             {
                 //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
                 connection.setRequestProperty("Cookie",
-                        TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
+                        TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
             }
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -254,16 +289,18 @@ public class JSONParserforHttps {
             Log.e(TAG,"Error in url connection in GETJSONARRAY");
         }
         try{
-            if(msCookieManager.getCookieStore().getCookies().size() > 0)
+            connection.setRequestMethod("POST");
+            if(firstConnection==false){
+            if(LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0)
             {
                 //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
                 connection.setRequestProperty("Cookie",
-                        TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
-            }
+                        TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
+            }}
             connection.connect();
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG,"error in connection.connect");
+            Log.e(TAG, "error in connection.connect");
         }
         try{
             int status=connection.getResponseCode();
@@ -281,7 +318,7 @@ public class JSONParserforHttps {
                     Log.e("HTTPS connection : ","Json String "+ sb2.toString());
             }
         }catch(Exception e){
-            Log.e(TAG,"inputstream error ");
+            Log.e(TAG, "inputstream error ");
             e.printStackTrace();
         }
 
@@ -295,6 +332,7 @@ public class JSONParserforHttps {
         }
         return null;
     }
+
 }
 
 

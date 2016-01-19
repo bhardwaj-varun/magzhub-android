@@ -11,30 +11,14 @@
         android:theme="@style/MyMaterialTheme" >
         <activity
             android:name=".AfterLogin"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Home"
             android:label="@string/title_activity_home"
-            android:parentActivityName=".AfterLogin" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AfterLogin" >
-            </meta-data>
-        </activity>
-        <activity
-            android:name=".Friend"
-            android:label="@string/title_activity_friend"
-            android:parentActivityName=".AfterLogin" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AfterLogin" >
-            </meta-data>
-        </activity>
-        <activity
-            android:name=".Message"
-            android:label="@string/title_activity_message"
-            android:parentActivityName=".AfterLogin" >
+            android:parentActivityName=".AfterLogin"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AfterLogin" >
@@ -42,7 +26,8 @@
         </activity>
         <activity
             android:name=".Launcher"
-            android:label="@string/title_activity_launcher" >
+            android:label="@string/title_activity_launcher"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,12 +36,28 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Categories"
-            android:label="@string/title_activity_categories" >
+            android:label="@string/title_activity_categories"
+            android:parentActivityName=".AfterLogin"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AfterLogin" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".Getting_Magazines"
+            android:label="@string/title_activity_getting__magazines"
+            android:parentActivityName=".Categories"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Categories" >
+            </meta-data>
         </activity>
     </application>
-
 </manifest>

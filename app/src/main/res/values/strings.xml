@@ -31,5 +31,6 @@
     <string name="title_activity_launcher">Launcher</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_categories">Categories</string>
+    <string name="title_activity_getting__magazines">Getting_Magazines</string>
 
 </resources>
