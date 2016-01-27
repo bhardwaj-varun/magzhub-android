@@ -48,7 +48,8 @@
                     android:layout_height="wrap_content"
                     android:text="Subscribe"
                     android:id="@+id/mlsubsidbtn"
-                    android:onClick="handleButtonClick"
+                    android:focusable="false"
+                    
                     />
             </LinearLayout>
         </LinearLayout>

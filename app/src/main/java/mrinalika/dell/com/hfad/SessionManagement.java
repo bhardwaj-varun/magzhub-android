@@ -51,30 +51,77 @@ public class SessionManagement {
 
 
     public boolean isLoggedIn(){
+        /*
+        * public void checkLogin(){
+        // Check login status
+        if(!this.isLoggedIn()){
+            // user is not logged in redirect him to Login Activity
+            Intent i = new Intent(_context, LoginActivity.class);
+            // Closing all the Activities
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            // Add new Flag to start new Activity
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Staring Login Activity
+            _context.startActivity(i);
+        }
+         */
+
         return preferences.getBoolean(IS_LOGIN, false);
     }
+    public void checkLogin(Context _context){
+        // Check login status
+        if(!this.isLoggedIn()){
+            // user is not logged in redirect him to Login Activity
+            Intent i = new Intent(_context, LoginActivity.class);
+            // Closing all the Activities
+            //i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            // Add new Flag to start new Activity
+         //   i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Staring Login Activity
+            _context.startActivity(i);
+        }}
+
 
     public int getUserId()
     {
         return preferences.getInt(KEY_USERID,0);
     }
 
-    public String[] getProfileDetail()
+    public String getProfileDetail()
     {
-        String[] profileDetail=new String[2];
+        String profileDetail;
 
-        profileDetail[0]=preferences.getString(KEY_FULLNAME,"");
-        profileDetail[1]=preferences.getString(KEY_EmailId,"");
+        profileDetail=preferences.getString(KEY_FULLNAME,"");
+        //profileDetail[1]=preferences.getString(KEY_EmailId,"");
         return  profileDetail;
     }
 
 
+    /*public void logoutUser(){
+        // Clearing all data from Shared Preferences
+        editor.clear();
+        editor.commit();
+    }*/
     public void logoutUser(){
         // Clearing all data from Shared Preferences
         editor.clear();
         editor.commit();
-    }
 
+        // After logout redirect user to Loing Activity
+        Intent i = new Intent(context, LoginActivity.class);
+        // Closing all the Activities
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // Add new Flag to start new Activity
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Staring Login Activity
+        context.startActivity(i);
+    }
 
 }
 

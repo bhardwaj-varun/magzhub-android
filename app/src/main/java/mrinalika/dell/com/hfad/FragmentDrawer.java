@@ -167,11 +167,11 @@ public class FragmentDrawer extends Fragment {
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
 
-        @Override
+/*        @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
         }
-
+*/
 
     }
 

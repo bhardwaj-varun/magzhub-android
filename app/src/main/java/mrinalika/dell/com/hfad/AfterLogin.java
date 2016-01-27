@@ -18,7 +18,10 @@ public class AfterLogin extends AppCompatActivity implements FragmentDrawer.Frag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_after_login);
-            ToolbarHandling();
+     //   SessionManagement sessionManagement=new SessionManagement(getApplicationContext());
+       //if(sessionManagement.isLoggedIn())
+           ToolbarHandling();
+
 
     }
 
@@ -54,7 +57,7 @@ public class AfterLogin extends AppCompatActivity implements FragmentDrawer.Frag
         switch(position){
             case 0:
 
-                startActivity(new Intent(this,Home.class));
+                startActivity(new Intent(this,Setting.class));
                 break;
             case 1:
 

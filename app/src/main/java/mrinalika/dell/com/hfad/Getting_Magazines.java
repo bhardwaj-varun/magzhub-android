@@ -2,6 +2,7 @@ package mrinalika.dell.com.hfad;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -26,11 +27,12 @@ import java.util.List;
 
 
 public class Getting_Magazines extends ActionBarActivity {
-    ProgressDialog pdialog3;
+    ProgressDialog pdialog3,pdialog4;
     private String TAG="getting_magazines.java";
     ArrayList<Magazine> MagazineList;
     MagazineAdapter madapter;
     static  int magazineId;
+    Magazine magObChngStatusHandling;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,21 +51,39 @@ public class Getting_Magazines extends ActionBarActivity {
         ListView mlistview=(ListView)findViewById(R.id.list_magazines);
         madapter= new MagazineAdapter(getApplicationContext(),R.layout.row_magazine,MagazineList);
         mlistview.setAdapter(madapter);
+        magObChngStatusHandling= new Magazine();
+
+
         mlistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Getting_Magazines.this, "ListIemClicked " + position + "Magazine Id" + MagazineList.get(position).getMagazineId(), Toast.LENGTH_SHORT).show();
-                magazineId = Integer.parseInt(MagazineList.get(position).getMagazineId());
+                Log.e(TAG, "ListIemClicked " + position + "Magazine Id" + MagazineList.get(position).getMagazineId());
+     //           magazineId = Integer.parseInt(MagazineList.get(position).getMagazineId());
+
+               long viewId = view.getId();
+                Log.e(TAG,"view ID"+viewId);
+                if (viewId == R.id.mlsubsidbtn) {
+                   // Toast.makeText(getApplicationContext(), "someName item clicked", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "mlsubsbtn clicked");
+                    magObChngStatusHandling.setMagazineId(MagazineList.get(position).getMagazineId());
+                    magObChngStatusHandling.setSubscriptionStatus(MagazineList.get(position).getSubscriptionStatus());
+                    new AsyncTaskforMagazineSubscription().execute(MagazineList.get(position).getMagazineId());
+                    Button btn=(Button)findViewById(view.getId());
+                    String changedstatus=SubscriptionHandling(magObChngStatusHandling);
+                    btn.setText(changedstatus);
+                    Log.d("Btnstatuschnged","prvs status "+magObChngStatusHandling.getSubscriptionStatus()+" now status"+changedstatus);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "ListView clicked: " + id, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG,"no respnse: mlsubsbtn ot clicked");
+
+                }
+
             }
         });
 
     }
 
-    public void handleButtonClick(View view){
-        Button button=(Button)findViewById(view.getId());
-        Log.e(TAG,"Mag id"+magazineId+"Button text"+button.getText().toString());
-
-    }
     public  class AsyncTaskforMaagazines extends AsyncTask<String,Void,Boolean>{
         String yourJsonStringUrl = "https://www.magzhub.com/services/ClassMagazine.php";
         // contacts JSONArray
@@ -130,7 +150,52 @@ public class Getting_Magazines extends ActionBarActivity {
         return imageAsByes;
      }
 
+    public class AsyncTaskforMagazineSubscription extends AsyncTask<String,Void,Boolean>{
+        JSONObject jsonObjectforMagazineSubscription;
 
+        private String TAG="ATMagSubs";
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pdialog4= new ProgressDialog(Getting_Magazines.this);
+            pdialog4.setMessage("Just a moment");
+            //pdialog4.setTitle("Loading...");
+            pdialog4.setCancelable(true);
+            pdialog4.setIndeterminate(false);
+            pdialog4.show();
+
+        }
+        @Override
+        protected Boolean doInBackground(String... params){
+
+            try{
+                int resultsubscribe=0;
+                String MagsubURL="https://magzhub.com/services/ClassSubscription.php";
+                 String magIdReceived=params[0];
+                Log.e(TAG,"rcvdMagId "+Integer.parseInt(magIdReceived));
+                JSONParserforHttps jparser_magazineSubscriotion= new JSONParserforHttps();
+                List<NameValuePair> listMagId= new ArrayList<NameValuePair>();
+                listMagId.add(new BasicNameValuePair("magID",magIdReceived));
+                jsonObjectforMagazineSubscription= jparser_magazineSubscriotion.makingConnectionForJsonObject(MagsubURL,listMagId,"POST");
+                if(jsonObjectforMagazineSubscription.has("resultSubscribe")){
+                    resultsubscribe= jsonObjectforMagazineSubscription.getInt("resultSubscribe");
+                    Log.e(TAG, "has Result Subscribe value= "+ resultsubscribe);
+                    magObChngStatusHandling.setResult_status(resultsubscribe);
+                    Log.e(TAG," magObChngStatusHandling.setResult_status(resultsubscribe);"+ magObChngStatusHandling.getResult_status());
+                }
+                return true;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return false;
+        }
+        @Override
+        protected void onPostExecute(Boolean result){
+            pdialog4.cancel();
+            if(result==false)
+                Toast.makeText(getApplicationContext(),"Error in Connection",Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,5 +217,30 @@ public class Getting_Magazines extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public String SubscriptionHandling(Magazine magazine) {
+        String ButtonSubscriptionStatus = magazine.getSubscriptionStatus();
+        int resultSubscribeStatus = magazine.getResult_status();
+        Log.e("Subscription", "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
+        if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 1) {
+            Toast.makeText(this, "Sucessfully Subscribed", Toast.LENGTH_LONG).show();
+            //Log.e(TAG, "Sucessfully Subscribed");
+            ButtonSubscriptionStatus = "Unsubscribe";
+        } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 0) {
+                Toast.makeText(this, "Sorry..! You can only subscribe maximum 10 magazines in a month", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Sorry..! You can only subscribe maximum 10 magazines in a month");
+        } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 4) {
+                Toast.makeText(this, "Cannot Subscribe .. our account is not active..!!", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Cannot Subscribe .. your account is not active..!!");
+        } else if (ButtonSubscriptionStatus.equals("Unsubscribe") && resultSubscribeStatus == 2) {
+                    Toast.makeText(this, "Sucessfully Unsubscribed", Toast.LENGTH_LONG).show();
+                    ButtonSubscriptionStatus = "Subscribe";
+            //Log.e(TAG, "Sucessfully Unsubscribed");
+        } else if (ButtonSubscriptionStatus.equals("Unubscribe") && resultSubscribeStatus == 3) {
+                Toast.makeText(this, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!");
+        }
+        magazine.setSubscriptionStatus(ButtonSubscriptionStatus);
+        return ButtonSubscriptionStatus;
     }
 }

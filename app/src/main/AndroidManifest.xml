@@ -6,19 +6,19 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_logo_n_icon"
         android:label="@string/app_name"
-        android:theme="@style/MyMaterialTheme" >
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".AfterLogin"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Home"
             android:label="@string/title_activity_home"
             android:parentActivityName=".AfterLogin"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AfterLogin" >
@@ -26,8 +26,8 @@
         </activity>
         <activity
             android:name=".Launcher"
-            android:label="@string/title_activity_launcher"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,13 +37,18 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".Launcher"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Launcher" >
+            </meta-data>
         </activity>
         <activity
             android:name=".Categories"
             android:label="@string/title_activity_categories"
             android:parentActivityName=".AfterLogin"
-            >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AfterLogin" >
@@ -53,11 +58,22 @@
             android:name=".Getting_Magazines"
             android:label="@string/title_activity_getting__magazines"
             android:parentActivityName=".Categories"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Categories" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".Setting"
+            android:label="@string/title_activity_setting"
+            android:parentActivityName=".Categories"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Categories" >
             </meta-data>
         </activity>
     </application>
+
 </manifest>

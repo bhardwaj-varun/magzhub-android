@@ -20,13 +20,18 @@ public class Launcher extends ActionBarActivity {
     }
     public void OnClickButtonListener(){
         btn1=(Button)findViewById(R.id.btn_login);
+        try{
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intent = new Intent(Launcher.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
-    }
+    }catch(Exception e){
+            e.printStackTrace();
+        }}
+
+
 
 }

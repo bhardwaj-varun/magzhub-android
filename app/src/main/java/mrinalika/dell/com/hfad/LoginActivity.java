@@ -1,13 +1,17 @@
 package mrinalika.dell.com.hfad;
 
+import android.content.Context;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieSyncManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends AppCompatActivity {
     int success;
     final String TAG = "AsyncTask_JPHttps";
-    Button b;
+    Button loginbtn;
     EditText et,pass;
     ProgressDialog pdialog;
     SessionManagement sessionManagement;
@@ -37,11 +41,17 @@ public class LoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sessionManagement= new SessionManagement(getApplicationContext());
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setLogo(R.mipmap.ic_magzhub_logo);
+        toolbar.setTitle("Magzhub");
 
-     //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
+        //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
        // toolbar.setLogo(R.mipmap.ic_magzhub_logo);
         createVariable();
-        b.setOnClickListener(new View.OnClickListener() {
+        loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AsyncTaskParseJson().execute();
@@ -50,7 +60,7 @@ public class LoginActivity extends ActionBarActivity {
         });
     }
     public void createVariable(){
-        b = (Button)findViewById(R.id.btn_login);
+        loginbtn = (Button)findViewById(R.id.btn_login);
         et = (EditText)findViewById(R.id.email);
         pass= (EditText)findViewById(R.id.password);
         // passwrdshw=(Button)findViewById(R.id.showpassword); for view typed password
@@ -88,19 +98,19 @@ public class LoginActivity extends ActionBarActivity {
                 params.add(new BasicNameValuePair("email",email));
                 params.add(new BasicNameValuePair("password",password));
                 final JSONObject json= jParser.makingConnectionForJsonObject(yourJsonStringUrl,params,"POST");
-                String messagefromJson=json.getString("custommessage");
+                final String messagefromJson=json.getString("custommessage");
                 Log.e(TAG,"customMessage"+ messagefromJson);
 
                 // check log cat fro response
                 if (json.has("messagestatus")) {
                     Log.e(TAG, "has message status =" + json.getInt("messagestatus") + messagefromJson);
                     try{
-                    success=json.getInt("messagestatus");
-                    if (success==1) {
-                        sessionManagement = new SessionManagement(getApplicationContext());
-                        sessionManagement.createLoginSession(success);
-                        String getUserName = json.getString("custommessage");
-                        sessionManagement.setProfile(getUserName);}
+                    //success=json.getInt("messagestatus");
+                   // if (success==1) {
+                     //   sessionManagement = new SessionManagement(getApplicationContext());
+                       // sessionManagement.createLoginSession(success);
+                        //String getUserName = json.getString("custommessage");
+                        //sessionManagement.setProfile(getUserName);}
 
                     }catch(Exception e){
                         e.printStackTrace();
@@ -112,15 +122,21 @@ public class LoginActivity extends ActionBarActivity {
                             try {
                                 if (json.getInt("messagestatus") == 1) {
                                     //Toast.makeText(HomePage.this, json.getString("custommessage"), Toast.LENGTH_SHORT).show();
-                                    /*
-                                    *
-                                success=json.getInt("messagestatus");
-                                if (success==1) {
+
+
+                                //success=json.getInt("messagestatus");
+
+                                    //sessionManagement.createLoginSession(success);
+                                    //String getUserName=json.getString("custommessage");
+                                    //sessionManagement.setProfile(getUserName);
+                                    sessionManagement.createLoginSession(json.getInt("userid"));
+                                    sessionManagement.setProfile(messagefromJson);
+                                   /* success=json.getInt("messagestatus");
+
                                     sessionManagement= new SessionManagement(getApplicationContext());
                                     sessionManagement.createLoginSession(success);
                                     String getUserName=json.getString("custommessage");
-                                    sessionManagement.setProfile(getUserName);
-*/
+                                    sessionManagement.setProfile(getUserName);*/
                                     Intent intent = new Intent(LoginActivity.this, AfterLogin.class);
                                     startActivity(intent);
                                 } else {
@@ -150,6 +166,13 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
     public void onBackPressed(){
+
         super.onBackPressed();
+    }
+    @SuppressWarnings("deprecation")
+    public static void ClearCookies(Context context)
+    {
+        Log.e("Clearing Cookies : ","CLEARED");
+          msCookieManager.getCookieStore().removeAll();
     }
 }

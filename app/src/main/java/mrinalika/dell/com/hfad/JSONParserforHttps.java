@@ -116,8 +116,8 @@ public class JSONParserforHttps {
         }
      }
 
-
     public JSONObject makingConnectionForJsonObject(String stringUrl, List<NameValuePair> params,String method  ){
+        JSONObject jsonObject;
         StringBuilder sb = new StringBuilder();
         try {
             URL url = new URL(stringUrl);
@@ -147,31 +147,36 @@ public class JSONParserforHttps {
             }catch (Exception e) {
                 Log.e(TAG, "error in DataOutputStream ");
                 e.printStackTrace();
-            } if(firstConnection){
-               // msCookieManager.getInstance().setAcceptCookie(true);
-               // cookieHandler.setDefault(msCookieManager);
+            } if(firstConnection) {
+                // msCookieManager.getInstance().setAcceptCookie(true);
+                // cookieHandler.setDefault(msCookieManager);
                 headerFields = connection.getHeaderFields();
-                Log.e(TAG,connection.getHeaderFields().toString());
-                try{
-                int responseCode = connection.getResponseCode();
-                Log.d(TAG,"responseCode ->" + responseCode);
+                Log.e(TAG, connection.getHeaderFields().toString());
+                try {
+                    int responseCode = connection.getResponseCode();
+                    Log.d(TAG, "responseCode ->" + responseCode);
 
-                if(responseCode== HttpsURLConnection.HTTP_OK)
-                {
-                    Map<String, List<String>> headerFields = connection.getHeaderFields();
-                    List<String> cookiesHeader = headerFields.get("Set-Cookie");
-                    Log.e(TAG,"cookieHeader"+cookiesHeader);
-                    if(cookiesHeader != null)
-                    {
-                        try{for (String cookie : cookiesHeader)
-                        {
-                            LoginActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                        }}catch (Exception e){
-                            e.printStackTrace();
-                            Log.e(TAG,"error in  msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));");
+                    if (responseCode == HttpsURLConnection.HTTP_OK) {
+                        Map<String, List<String>> headerFields = connection.getHeaderFields();
+                        List<String> cookiesHeader = headerFields.get("Set-Cookie");
+                        Log.e(TAG, "cookieHeader" + cookiesHeader);
+                        if (cookiesHeader != null) {
+                            try {
+                                for (String cookie : cookiesHeader) {
+                                    LoginActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e(TAG, "error in  msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));");
+                            }
                         }
-                    }}
-
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "error=======");
+                }
+                firstConnection = false;
+            }
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
                     while ((line = br.readLine()) != null) {
@@ -180,10 +185,7 @@ public class JSONParserforHttps {
                     br.close();
                     sb.toString();
                     Log.e("HTTPS connection : ", "Json String " + sb.toString());
-                }catch(Exception e){
-                    e.printStackTrace();}
-                firstConnection=false;
-            }
+
         }catch (Exception e) {
             Log.e(TAG, "error in connection.connect");
             e.printStackTrace();
@@ -218,7 +220,7 @@ public class JSONParserforHttps {
         }
 */
         try {
-            JSONObject jsonObject=new JSONObject(sb.toString());
+             jsonObject=new JSONObject(sb.toString());
             return jsonObject;
       }catch (Exception e) {
             return null;
