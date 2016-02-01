@@ -51,22 +51,6 @@ public class SessionManagement {
 
 
     public boolean isLoggedIn(){
-        /*
-        * public void checkLogin(){
-        // Check login status
-        if(!this.isLoggedIn()){
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
-            // Closing all the Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-        }
-         */
 
         return preferences.getBoolean(IS_LOGIN, false);
     }
@@ -74,7 +58,7 @@ public class SessionManagement {
         // Check login status
         if(!this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
+            Intent i = new Intent(_context, Launcher.class);
             // Closing all the Activities
             //i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -83,7 +67,13 @@ public class SessionManagement {
 
             // Staring Login Activity
             _context.startActivity(i);
-        }}
+            }
+        else{
+            Intent i= new Intent(_context,MySubscription.class);
+            _context.startActivity(i);
+        }
+
+    }
 
 
     public int getUserId()

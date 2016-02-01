@@ -41,6 +41,7 @@ public class Getting_Magazines extends ActionBarActivity {
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_logo_n_icon);
         toolbar.setTitle("Magzhub");
+
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         MagazineList = new ArrayList<Magazine>();
@@ -82,7 +83,10 @@ public class Getting_Magazines extends ActionBarActivity {
             }
         });
 
-    }
+    } /*  ListView magIssuelistview=(ListView)findViewById(R.id.list_issued_magazines);
+        issuedMagAdapter= new IssueSubscribedMagazineAdapter(getApplicationContext(),R.layout.row_issued_magazine,issueSubMagazineList);
+        magIssuelistview.setAdapter(issuedMagAdapter);*/
+
 
     public  class AsyncTaskforMaagazines extends AsyncTask<String,Void,Boolean>{
         String yourJsonStringUrl = "https://www.magzhub.com/services/ClassMagazine.php";
@@ -221,17 +225,20 @@ public class Getting_Magazines extends ActionBarActivity {
     public String SubscriptionHandling(Magazine magazine) {
         String ButtonSubscriptionStatus = magazine.getSubscriptionStatus();
         int resultSubscribeStatus = magazine.getResult_status();
-        Log.e("Subscription", "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
+        Log.e(TAG, "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
         if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 1) {
             Toast.makeText(this, "Sucessfully Subscribed", Toast.LENGTH_LONG).show();
             //Log.e(TAG, "Sucessfully Subscribed");
+
             ButtonSubscriptionStatus = "Unsubscribe";
         } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 0) {
                 Toast.makeText(this, "Sorry..! You can only subscribe maximum 10 magazines in a month", Toast.LENGTH_LONG).show();
             Log.e(TAG, "Sorry..! You can only subscribe maximum 10 magazines in a month");
+            ButtonSubscriptionStatus = "Subscribe";
         } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 4) {
                 Toast.makeText(this, "Cannot Subscribe .. our account is not active..!!", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Cannot Subscribe .. your account is not active..!!");
+            ButtonSubscriptionStatus = "Subscribe";
         } else if (ButtonSubscriptionStatus.equals("Unsubscribe") && resultSubscribeStatus == 2) {
                     Toast.makeText(this, "Sucessfully Unsubscribed", Toast.LENGTH_LONG).show();
                     ButtonSubscriptionStatus = "Subscribe";
@@ -239,6 +246,7 @@ public class Getting_Magazines extends ActionBarActivity {
         } else if (ButtonSubscriptionStatus.equals("Unubscribe") && resultSubscribeStatus == 3) {
                 Toast.makeText(this, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!", Toast.LENGTH_LONG).show();
             Log.e(TAG, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!");
+            ButtonSubscriptionStatus = "UnSubscribe";
         }
         magazine.setSubscriptionStatus(ButtonSubscriptionStatus);
         return ButtonSubscriptionStatus;

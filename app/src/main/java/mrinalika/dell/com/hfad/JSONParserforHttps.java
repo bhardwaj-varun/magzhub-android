@@ -227,7 +227,7 @@ public class JSONParserforHttps {
         }
     }
 
-    public JSONArray getJSONArrayHTTPSPost(String urlstring){
+    public JSONArray getJSONArrayHTTPSWithoutParams(String urlstring){
         StringBuilder sb2= new StringBuilder();
         try{
             URL url= new URL(urlstring);

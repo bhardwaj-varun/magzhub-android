@@ -5,19 +5,17 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mrinalika.dell.com.hfad.AfterLogin">
+    tools:context="mrinalika.dell.com.hfad.MySubscription">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <LinearLayout
             android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
@@ -28,11 +26,18 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_subscribed_magazine"
+            tools:listitem="@layout/row_subscribed_magazine"
+            >
+        </ListView>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:background="@color/windowBackground"></LinearLayout>
     </LinearLayout>
-
-
     <fragment
         android:id="@+id/fragment_navigation_drawer"
         android:name="mrinalika.dell.com.hfad.FragmentDrawer"

@@ -16,4 +16,7 @@
     <color name="colorAccent">#34403A</color>
     <color name="selected_gray">#ffdbdbdb</color>
     <color name="activitiesBackground">#F1F1F1</color>
+    <color name="btn_background">#3F51B5</color>
+    <!--<color name="btn_background">#83CAD1</color>-->
+    <color name="text_color">#FFFFFF</color>
 </resources>

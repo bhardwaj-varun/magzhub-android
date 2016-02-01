@@ -1,8 +1,6 @@
 package mrinalika.dell.com.hfad;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.webkit.CookieSyncManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -137,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                                     sessionManagement.createLoginSession(success);
                                     String getUserName=json.getString("custommessage");
                                     sessionManagement.setProfile(getUserName);*/
-                                    Intent intent = new Intent(LoginActivity.this, AfterLogin.class);
+                                    Intent intent = new Intent(LoginActivity.this, MySubscription.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(LoginActivity.this, json.getString("custommessage"), Toast.LENGTH_SHORT).show();
