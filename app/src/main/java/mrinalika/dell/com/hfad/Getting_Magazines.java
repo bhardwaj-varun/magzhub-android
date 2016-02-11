@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -33,15 +34,17 @@ public class Getting_Magazines extends ActionBarActivity {
     MagazineAdapter madapter;
     static  int magazineId;
     Magazine magObChngStatusHandling;
+    ListView mlistview;
+    TextView noMagazinetv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_getting__magazines);
         Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.ic_logo_n_icon);
-        toolbar.setTitle("Magzhub");
-
+        toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
+        getSupportActionBar().setTitle("Magzines");
+        noMagazinetv=(TextView)findViewById(R.id.noMagazinestv);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         MagazineList = new ArrayList<Magazine>();
@@ -49,9 +52,10 @@ public class Getting_Magazines extends ActionBarActivity {
         String categoryid= intent.getStringExtra("CategoryId");
         Log.e(TAG, "CategoryId Received " + categoryid);
         new AsyncTaskforMaagazines().execute(categoryid);
-        ListView mlistview=(ListView)findViewById(R.id.list_magazines);
+        mlistview=(ListView)findViewById(R.id.list_magazines);
         madapter= new MagazineAdapter(getApplicationContext(),R.layout.row_magazine,MagazineList);
         mlistview.setAdapter(madapter);
+
         magObChngStatusHandling= new Magazine();
 
 
@@ -88,8 +92,9 @@ public class Getting_Magazines extends ActionBarActivity {
         magIssuelistview.setAdapter(issuedMagAdapter);*/
 
 
-    public  class AsyncTaskforMaagazines extends AsyncTask<String,Void,Boolean>{
+    public  class AsyncTaskforMaagazines extends AsyncTask<String,Void,String>{
         String yourJsonStringUrl = "https://www.magzhub.com/services/ClassMagazine.php";
+        String statusAfterFetching;
         // contacts JSONArray
         JSONArray jsonmagz;
         @Override
@@ -103,7 +108,7 @@ public class Getting_Magazines extends ActionBarActivity {
             pdialog3.show();
         }
     @Override
-        protected Boolean doInBackground(String... arg0){
+        protected String doInBackground(String... arg0){
         String msubscriptionstatus, mid;
         try{
             JSONParserforHttps jParserml= new JSONParserforHttps();
@@ -112,6 +117,10 @@ public class Getting_Magazines extends ActionBarActivity {
             List<NameValuePair> paramsml = new ArrayList<NameValuePair>();
             paramsml.add(new BasicNameValuePair("catid",Integer.toString(s)));
             jsonmagz= jParserml.makingconnectionForJSONArray(yourJsonStringUrl,paramsml,"POST");
+            if(jsonmagz==null){
+
+            }
+            if(jsonmagz!=null){
             Log.e(TAG,"SIZE : "+ jsonmagz.length());
             for(int i=0; i<jsonmagz.length(); i++){
                 try {
@@ -129,25 +138,40 @@ public class Getting_Magazines extends ActionBarActivity {
                         fetchmagazine.setSubscriptionStatus(msubscriptionstatus);
                         fetchmagazine.setMagazineThumbnail(converttoBitmap(mthumbnail));
                         MagazineList.add(fetchmagazine);
-                    }
+                       }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
 
             }
-            return  true;
+                statusAfterFetching="Success";
+            return  "Success";
+        }
+        else {
+                //noMagazinetv.setText("Oops, No magazine in this Category yet , Please go to another Category");
+              //  noMagazinetv.setVisibility(View.VISIBLE);
+                return "NoMagazine";
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
-        return false;
+
+        return "FetchingFailed";
     }
     @Override
-        protected void onPostExecute(Boolean result){
+        protected void onPostExecute(String result){
             pdialog3.cancel();
+            Log.e("OnPostxecute","result : "+result);
+
             madapter.notifyDataSetChanged();
-        if(result==null)
-            Toast.makeText(getApplicationContext(),"Unable to fetch data from Server",Toast.LENGTH_SHORT).show();
+        if(result.equals("FetchingFailed"))
+            Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
+        else if(result.equals("NoMagazine"))
+            noMagazinetv.setText("No magazines in this Category. Please go to another category");
+            noMagazinetv.setVisibility(View.VISIBLE);
         }
+
     }
     public byte[] converttoBitmap(String thumbnail){
         byte[] imageAsByes= Base64.decode(thumbnail.getBytes(),Base64.DEFAULT);
@@ -217,6 +241,7 @@ public class Getting_Magazines extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,Setting.class));
             return true;
         }
 

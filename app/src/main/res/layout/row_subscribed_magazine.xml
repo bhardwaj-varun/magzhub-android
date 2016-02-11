@@ -89,8 +89,13 @@
                             />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/windowBackground"
+                    ></LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+            </LinearLayout>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="50dp"

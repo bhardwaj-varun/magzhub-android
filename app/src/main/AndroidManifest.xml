@@ -3,10 +3,10 @@
     package="mrinalika.dell.com.hfad" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_logo_n_icon"
+        android:icon="@drawable/magzhub_icon_trans_back"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -83,7 +83,7 @@
         </activity>
         <activity
             android:name=".StartActivity"
-            android:label="@string/title_activity_start"
+            android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,12 +95,20 @@
             android:name=".MagazineIssue"
             android:label="@string/title_activity_magazine_issue"
             android:parentActivityName=".MySubscription"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MySubscription" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".faq"
+            android:label="@string/title_activity_faq"
+            android:parentActivityName=".MySubscription"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MySubscription">
-
-            </meta-data>
+                android:value=".MySubscription"></meta-data>
         </activity>
     </application>
 

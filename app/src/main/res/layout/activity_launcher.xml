@@ -14,7 +14,7 @@
         android:layout_margin="25dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/magzhub_logo"
-        android:src="@mipmap/ic_logo_n_icon"/>
+        android:src="@drawable/magzhub_logo_12"/>
 
 
     <!--- <TextView android:text="welcome"
@@ -25,14 +25,14 @@
          android:layout_centerHorizontal="true"
          android:textSize="40dp"/>-->
     <Button
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/magzhub_logo"
         android:id="@+id/btn_login"
         android:text="Login"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
-
+        android:background="@color/btn_background"
         />
 
 </RelativeLayout>

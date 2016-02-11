@@ -9,18 +9,21 @@
     <string name="drawer_close">Close</string>
 
     <string name="nav_item_Setting">Setting</string>
-    <string name="nav_item_Categories">Categories</string>
+    <string name="nav_item_Categories">Subscribe Magazine</string>
+    <string name="nav_item_MySubsription">Subscriptions</string>
+    <string name="nav_item_FAQ">FAQ</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
-        <item>@string/nav_item_Setting</item>
+        <item>@string/nav_item_MySubsription</item>
         <item>@string/nav_item_Categories</item>
-
+        <item>@string/nav_item_Setting</item>
+        <item>@string/nav_item_FAQ</item>
     </string-array>
 
     <string name="title_messages">Messages</string>
     <string name="title_friends">Friends</string>
-    <string name="title_home">Home</string>
+
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -36,5 +39,7 @@
     <string name="title_activity_web_view">WebViewActivity</string>
     <string name="title_activity_start">StartActivity</string>
     <string name="title_activity_magazine_issue">MagazineIssue</string>
+    <string name="title_activity_faq">faq</string>
+    <string name="MySubsToolBarTitle">My Subscriptions</string>
 
 </resources>

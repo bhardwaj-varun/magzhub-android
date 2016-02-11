@@ -1,0 +1,361 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="fill_parent"
+    tools:context="mrinalika.dell.com.hfad.faq"
+    >
+    <include
+        android:id="@id/toolbar"
+        layout="@layout/toolbar"
+
+        />
+    <ScrollView
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <TextView android:text="Question 1"
+        android:id="@+id/ques1"
+        android:layout_margin="12dip"
+        android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onClick1"
+        android:textStyle="bold"
+        />
+     <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans1"
+            android:layout_margin="12dip"
+            android:text="ans 1"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 2"
+            android:id="@+id/ques2"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick2"
+            android:textStyle="bold"
+            android:layout_weight="15"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans2"
+            android:layout_margin="12dip"
+            android:text="ans 2"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 3"
+            android:id="@+id/ques3"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick3"
+            android:textStyle="bold"/>
+             <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans3"
+            android:layout_margin="12dip"
+            android:text="ans 3"
+            android:visibility="gone"
+            />
+            <TextView android:text="Question4"
+            android:id="@+id/ques4"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick4"
+            android:textStyle="bold"/>
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans4"
+            android:layout_margin="12dip"
+            android:text="ans 4"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 5"
+            android:id="@+id/ques5"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick5"
+            android:textStyle="bold"
+            android:layout_weight="15"/>
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans5"
+            android:layout_margin="12dip"
+            android:text="ans 5"
+            android:visibility="gone"
+            />
+
+        <TextView android:text="Question 6"
+            android:id="@+id/ques6"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick6"
+            android:textStyle="bold"/>
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans6"
+            android:layout_margin="12dip"
+            android:text="ans 6"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 7"
+            android:id="@+id/ques7"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick7"
+            android:textStyle="bold"/>
+
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans7"
+            android:layout_margin="12dip"
+            android:text="ans 7"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 7b"
+            android:id="@+id/ques7b"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick7b"
+            android:textStyle="bold"/>
+
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans7b"
+            android:layout_margin="12dip"
+            android:text="ans 7b"
+            android:visibility="gone"
+                android:layout_weight="15"
+            />
+        <TextView android:text="Question 8"
+            android:id="@+id/ques8"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick8"
+            android:textStyle="bold"/>
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans8"
+            android:layout_margin="12dip"
+            android:text="ans 8"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 9"
+            android:id="@+id/ques9"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick9"
+            android:textStyle="bold"/>
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans9"
+            android:layout_margin="12dip"
+            android:text="ans 9"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 10"
+            android:id="@+id/ques10"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick10"
+            android:textStyle="bold"/>
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans10"
+            android:layout_margin="12dip"
+            android:text="ans 10"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 11"
+            android:id="@+id/ques11"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick11"
+            android:textStyle="bold"/>
+             <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans11"
+            android:layout_margin="12dip"
+            android:text="ans 11"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 12"
+            android:id="@+id/ques12"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick12"
+            android:textStyle="bold"
+            android:layout_weight="15"/>
+
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans12"
+            android:layout_margin="12dip"
+            android:text="ans 12"
+            android:visibility="gone"
+            />
+
+          <TextView android:text="Question 13"
+            android:id="@+id/ques13"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick13"
+            android:textStyle="bold"/>
+             <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans13"
+            android:layout_margin="12dip"
+            android:text="ans 13"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 14"
+            android:id="@+id/ques14"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick14"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans14"
+            android:layout_margin="12dip"
+            android:text="ans 14"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 15"
+            android:id="@+id/ques15"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick15"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans15"
+            android:layout_margin="12dip"
+            android:text="ans 15"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 16"
+            android:id="@+id/ques16"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick16"
+            android:textStyle="bold"/>
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans16"
+            android:layout_margin="12dip"
+            android:text="ans 16"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 17"
+            android:id="@+id/ques17"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_weight="15"
+            android:onClick="onClick17"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans17"
+            android:layout_margin="12dip"
+            android:text="ans 17"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 18"
+            android:id="@+id/ques18"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick18"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans18"
+            android:layout_margin="12dip"
+            android:text="ans 18"
+            android:visibility="gone"
+            />
+        <TextView android:text="Question 19"
+            android:id="@+id/ques19"
+            android:layout_margin="12dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onClick19"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ans19"
+            android:layout_margin="12dip"
+            android:text="ans 19"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

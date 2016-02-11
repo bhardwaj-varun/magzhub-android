@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -29,14 +31,15 @@ import java.util.List;
 public class MySubscription extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
     String TAG="MySubscription";
     String urlgoogledrive;
-    Boolean return_answer;
+    Button btnChangedText;
     private Toolbar toolbar;
     private ProgressDialog pdia,pdialog4;
     private FragmentDrawer drawerFragment;
-   ArrayList<Magazine> SubscribedMagazineList;
+    ArrayList<Magazine> SubscribedMagazineList;
     SubscribedMagazineAdapter subscribedMagazineAdapter;
     static String MagIdforReceived;
     Magazine magObjSubsHandling;
+    Magazine fetchsubmagazine = new Magazine();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,10 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
                     startActivity(i);
 
                 } else if (viewId == R.id.subMagSubsStatus) {
+                    btnChangedText=(Button)findViewById(view.getId());
                     AlertforUnsubscription(view, SubscribedMagazineList.get(position).getMagazineId());
+
+                    //btnChangedText.setText("hello");
                    /* if(return_answer==true){
                     new AsyncTaskforMagazineSubscriptionHandling().execute(SubscribedMagazineList.get(position).getMagazineId());
                     String ChangedStatus=SubscriptionHandling(magObjSubsHandling);
@@ -109,7 +115,7 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
                 if(jsonObjectforMagazineSubscriptionMysubscription.has("resultSubscribe")){
                     resultsubscribe= jsonObjectforMagazineSubscriptionMysubscription.getInt("resultSubscribe");
                     Log.e(TAG, "has Result Subscribe value= " + resultsubscribe);
-                    magObjSubsHandling.setResult_status(resultsubscribe);
+                    fetchsubmagazine.setResult_status(resultsubscribe);
                     //Log.e(TAG," magObChngStatusHandling.setResult_status(resultsubscribe);"+ magObChngStatusHandling.getResult_status());
                 }
                 return true;
@@ -121,7 +127,11 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
         @Override
         protected void onPostExecute(Boolean result){
             pdialog4.cancel();
-            String ChangedStatus=SubscriptionHandling(magObjSubsHandling);
+            String ChangedStatus=SubscriptionHandling(fetchsubmagazine.getResult_status());
+            Log.e("...","Changed status is "+ChangedStatus);
+            btnChangedText.setText(ChangedStatus);
+            if(ChangedStatus.equals("Subscribe"))
+                new MySubscriptionAsyncTask().execute();
             Log.e(TAG,"Changed Status"+ChangedStatus);
             if(result==false)
                 Toast.makeText(getApplicationContext(),"Error in Connection",Toast.LENGTH_SHORT).show();
@@ -134,8 +144,8 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
     @Override
     protected void onPreExecute(){
         pdia= new ProgressDialog(MySubscription.this);
-        pdia.setMessage("Subscribed Magazines");
-        pdia.setCancelable(false);
+        pdia.setMessage("Loading...");
+        pdia.setCancelable(true);
         pdia.setIndeterminate(true);
         pdia.show();
     }
@@ -161,7 +171,7 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
                         String submthumbnail = c.getString("thumbnail");
                         Log.e(TAG, "id:" + submid
                                 + " name:" + submname +"thumbnail : "+ submthumbnail);
-                        Magazine fetchsubmagazine = new Magazine();
+                       // Magazine fetchsubmagazine = new Magazine();
                         fetchsubmagazine.setMagazineId(submid);
                         fetchsubmagazine.setMagazineName(submname);
                         fetchsubmagazine.setMagazineThumbnail(converttoBitmap(submthumbnail));
@@ -253,18 +263,20 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MySubscription.this, Setting.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    public String SubscriptionHandling(Magazine magazine) {
+    public String SubscriptionHandling(int result_status) {
         String ButtonSubscriptionStatus = "Unsubscribe";
-        int resultSubscribeStatus = magazine.getResult_status();
+        Log.d("Subscription Handling ","result Status received "+result_status);
+        int resultSubscribeStatus = result_status;
         Log.e(TAG, "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
         if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 1) {
             Toast.makeText(this, "Sucessfully Subscribed", Toast.LENGTH_LONG).show();
-            //Log.e(TAG, "Sucessfully Subscribed");
+            Log.d(TAG, "Sucessfully Subscribed");
 
             ButtonSubscriptionStatus = "Unsubscribe";
         } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 0) {
@@ -279,33 +291,42 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             Toast.makeText(this, "Sucessfully Unsubscribed", Toast.LENGTH_LONG).show();
             ButtonSubscriptionStatus = "Subscribe";
             //Log.e(TAG, "Sucessfully Unsubscribed");
-        } else if (ButtonSubscriptionStatus.equals("Unubscribe") && resultSubscribeStatus == 3) {
+        } else if (ButtonSubscriptionStatus.equals("Unsubscribe") && resultSubscribeStatus == 3) {
             Toast.makeText(this, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!", Toast.LENGTH_LONG).show();
             Log.e(TAG, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!");
-            ButtonSubscriptionStatus = "UnSubscribe";
+            ButtonSubscriptionStatus = "Unsubscribe";
         }
-        magazine.setSubscriptionStatus(ButtonSubscriptionStatus);
+        fetchsubmagazine.setSubscriptionStatus(ButtonSubscriptionStatus);
         return ButtonSubscriptionStatus;
     }
-
     @Override
     public void onDrawerItemSelected(View view, int position) {
-            displayView(position);
+    //    long viewidNavDrawer=view.getId();
+  //      TextView UserName=(TextView)view.findViewById(R.id.txtUsername);
+     //   UserName.setText(LoginActivity.username);
+
+        displayView(position);
+//        Log.e(TAG, "Username" + UserName.getText());
     }
     private void displayView(int position){
         Log.e(TAG, "position= " + position);
         switch(position){
             case 0:
 
-                startActivity(new Intent(this,Setting.class));
+                startActivity(new Intent(this,MySubscription.class));
                 break;
             case 1:
 
                 startActivity(new Intent(this,Categories.class));
                 break;
+            case 2:
+                startActivity(new Intent(this,Setting.class));
+                break;
+            case 3:
+                startActivity(new Intent(this,faq.class));
+                break;
             default:
                 break;
-
         }
     }
     public void ToolbarHandling(){
@@ -313,8 +334,8 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setLogo(R.mipmap.ic_logo_n_icon);
+        getSupportActionBar().setTitle(getString(R.string.MySubsToolBarTitle));
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -329,19 +350,16 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
         alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MySubscription.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                //Toast.makeText(MySubscription.this,"You clicked yes button",Toast.LENGTH_LONG).show();
                 new AsyncTaskforMagazineSubscriptionHandling().execute(receivedMagId);
 
-               // Log.e(TAG, "changed Status" + ChangedStatus);
-               return_answer= true;
             }
         });
 
         alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MySubscription.this,"You clicked yes button",Toast.LENGTH_LONG).show();
-                return_answer=false;
+                //Toast.makeText(MySubscription.this,"You clicked yes button",Toast.LENGTH_LONG).show();
             }
         });
         AlertDialog alertDialog = alertDialogBuilder.create();

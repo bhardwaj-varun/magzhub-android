@@ -16,4 +16,13 @@
         android:layout_height="wrap_content"
         tools:listitem="@layout/row_magazine">
     </ListView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/noMagazinestv"
+        android:clickable="false"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"/>
 </LinearLayout>

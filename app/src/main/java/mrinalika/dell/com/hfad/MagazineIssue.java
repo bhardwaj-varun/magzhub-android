@@ -81,7 +81,7 @@ public class IssueMagAsyncTask extends AsyncTask<String,Void,Boolean>{
         progressDialogIssue.setMessage("Loading..");
         progressDialogIssue.setIndeterminate(true);
         progressDialogIssue.setCancelable(true);
-//        progressDialogIssue.show();
+        progressDialogIssue.show();
 
     }
     @Override

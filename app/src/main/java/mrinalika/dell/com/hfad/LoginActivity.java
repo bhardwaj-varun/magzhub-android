@@ -1,6 +1,8 @@
 package mrinalika.dell.com.hfad;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -33,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     SessionManagement sessionManagement;
     static CookieManager msCookieManager= new CookieManager();
     static CookieHandler cookieHandler;
-
+    static String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +44,15 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setLogo(R.mipmap.ic_magzhub_logo);
-        toolbar.setTitle("Magzhub");
+        toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
+        getSupportActionBar().setTitle("Magzhub");
 
         //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
        // toolbar.setLogo(R.mipmap.ic_magzhub_logo);
         createVariable();
+        if(!isNetworkAvailable())
+            Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,10 +78,10 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pdialog = new ProgressDialog(LoginActivity.this);
-            pdialog.setMessage("Attempting Login");
+           // pdialog.setMessage("Attempting Login");
             pdialog.setCancelable(true);
             pdialog.setIndeterminate(false);
-            pdialog.setTitle("Validating User");
+            pdialog.setMessage("Validating User...");
             pdialog.show();
             //     finish();
         }
@@ -128,6 +133,8 @@ public class LoginActivity extends AppCompatActivity {
                                     //sessionManagement.setProfile(getUserName);
                                     sessionManagement.createLoginSession(json.getInt("userid"));
                                     sessionManagement.setProfile(messagefromJson);
+                                    username=messagefromJson.toString();
+                                    Log.e(TAG,"Username="+username);
                                    /* success=json.getInt("messagestatus");
 
                                     sessionManagement= new SessionManagement(getApplicationContext());
@@ -139,17 +146,17 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(LoginActivity.this, json.getString("custommessage"), Toast.LENGTH_SHORT).show();
                                 }
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
                     // Toast.makeText(MainActivity.this, json.getString("custommessage"), Toast.LENGTH_SHORT).show();
+                    return json.getString("custommessage");
                 }
-
                 else{
                     Log.e(TAG,"has no message status");
+                    return null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -160,10 +167,11 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String strFromDoInBg) {
             super.onPostExecute(strFromDoInBg);
             pdialog.dismiss();
+            if(strFromDoInBg.equals(null))
+                Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
         }
     }
     public void onBackPressed(){
-
         super.onBackPressed();
     }
     @SuppressWarnings("deprecation")
@@ -171,5 +179,16 @@ public class LoginActivity extends AppCompatActivity {
     {
         Log.e("Clearing Cookies : ","CLEARED");
           msCookieManager.getCookieStore().removeAll();
+    }
+    public boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        // if no network is available networkInfo will be null
+        // otherwise check if we are connected
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 }

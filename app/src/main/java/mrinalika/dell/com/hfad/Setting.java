@@ -25,8 +25,8 @@ public class Setting extends ActionBarActivity {
         Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.ic_logo_n_icon);
-        toolbar.setTitle("Magzhub");
+        toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
+        getSupportActionBar().setTitle("Magzhub");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         logout_btn=(Button)findViewById(R.id.btn_logout);
@@ -61,16 +61,5 @@ public class Setting extends ActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 }

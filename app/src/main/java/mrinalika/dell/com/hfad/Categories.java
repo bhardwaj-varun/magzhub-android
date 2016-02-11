@@ -35,8 +35,8 @@ public class Categories extends ActionBarActivity {
        // getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setLogo(R.mipmap.ic_magzhub_logo);
-        toolbar.setTitle("Categories");
+        toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
+        getSupportActionBar().setTitle("Categories");
 
         CategoriesList= new ArrayList<Category>();
         new AsyncTaskfroCategories().execute();
@@ -72,6 +72,7 @@ public class Categories extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(Categories.this,Setting.class));
             return true;
         }
 
@@ -127,7 +128,7 @@ public class Categories extends ActionBarActivity {
             pdialog2.cancel();
             adapter.notifyDataSetChanged();
             if(result == false)
-                Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
     }
     public byte[] converttoBitmap(String thumbnail) {

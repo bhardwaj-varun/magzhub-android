@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
      android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:layout_centerVertical="true">
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"
@@ -17,17 +18,50 @@ xmlns:tools="http://schemas.android.com/tools"
     tools:context="mrinalika.dell.com.hfad.LoginActivity"
 
 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></LinearLayout>
+
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:orientation="horizontal"
+        android:layout_weight=".7"
+    >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_account_circle_black_24dp_1"
+        android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
     <EditText
         android:text=""
         android:id="@+id/email"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textColorHint="@color/myTextColor"
         android:hint="username"
-        android:layout_margin="12dp"
-        android:textColor="@color/myNavigationColor">
+
+        android:textColor="@color/myNavigationColor"
+        android:layout_weight="10">
     </EditText>
+  <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".3"/>
+
+    </LinearLayout>
+
     <!--<TextView
         android:id="@+id/tv2"
         android:layout_width="fill_parent"
@@ -36,32 +70,72 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_margin="10dp"
         android:textColor="@color/myNavigationColor"
         />-->
-    <EditText
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_vpn_key_black_24dp_1"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
+        <EditText
         android:text=""
         android:id="@+id/password"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
+            android:layout_weight="10"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:hint="password"
         android:textColorHint="@color/myTextColor"
-        android:layout_margin="12dp"
         android:inputType="textPassword"
         android:textColor="@color/myNavigationColor">
     </EditText>
-    <!--<Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ShowPassword"
-        android:id="@+id/showpassword"
-        />-->
-    <Button
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
+
+        <Button
         android:text="Login"
         android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        >
+        android:background="@color/btn_background"
+        android:textColor="@color/textColorPrimary"
+        android:layout_weight="10"
+            >
     </Button>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"/>
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        ></LinearLayout>
 
 </LinearLayout>

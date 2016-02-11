@@ -37,8 +37,9 @@ public class IssueSubscribedMagazineAdapter extends ArrayAdapter<Magazine> {
         if(mlv==null){
             issuesubmlholder=new ViewHolder();
             mlv=issuesubmlvi.inflate(issuesubmlResource,null);
-            issuesubmlholder.submltvname=(TextView)mlv.findViewById(R.id.issuesubMagName);
+            issuesubmlholder.submlivIssueName=(TextView)mlv.findViewById(R.id.issuedMagIssueName);
             issuesubmlholder.submlivThumbnail=(ImageView)mlv.findViewById(R.id.issuesubMagThumbnail);
+            issuesubmlholder.submltvname=(TextView)mlv.findViewById(R.id.issuesubMagName);
             issuesubmlholder.submlRead=(Button)mlv.findViewById(R.id.issuesubMagRead);
             mlv.setTag(issuesubmlholder);
         }else{
