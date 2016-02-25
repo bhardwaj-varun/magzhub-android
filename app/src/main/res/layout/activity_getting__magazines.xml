@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="mrinalika.dell.com.hfad.Getting_Magazines">
+    tools:context="magzhub.com.app.Getting_Magazines">
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"

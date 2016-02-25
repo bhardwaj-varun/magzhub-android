@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/activitiesBackground"
-    tools:context="mrinalika.dell.com.hfad.Categories">
+    tools:context="magzhub.com.app.Categories">
 
     <include
         android:id="@+id/toolbar"

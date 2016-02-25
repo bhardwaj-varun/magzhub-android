@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mrinalika.dell.com.hfad.MySubscription">
+    tools:context="magzhub.com.app.MySubscription">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
     </LinearLayout>
     <fragment
         android:id="@+id/fragment_navigation_drawer"
-        android:name="mrinalika.dell.com.hfad.FragmentDrawer"
+        android:name="magzhub.com.app.FragmentDrawer"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

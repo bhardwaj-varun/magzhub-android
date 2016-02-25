@@ -4,18 +4,35 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:orientation="vertical">
-
-    <ProgressBar
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    android:layout_gravity="center"
-    android:id="@+id/progressBar1"/>
-
-    <WebView
-
-    android:id="@+id/webview1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context="mrinalika.dell.com.hfad.ReadingMagazine"/>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/windowBackground">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/leftSlideBtn"
+            android:src="@drawable/ic_chevron_left_slide"
+            android:layout_weight="1.5"
+            android:onClick="LeftSlideBtnClick"
+            android:layout_gravity="center"
+            android:background="@color/windowBackground"
+            />
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="fill_parent"
+            tools:context="magzhub.com.app.ReadingMagazine"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rightSlideBtn"
+            android:src="@drawable/ic_chevron_right_slide"
+            android:layout_weight="1.5"
+            android:onClick="RightSlideBtnClick"
+            android:layout_gravity="center"
+            android:background="@color/windowBackground"/>
+    </LinearLayout>
 </LinearLayout>
