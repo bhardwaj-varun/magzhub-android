@@ -163,8 +163,6 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             for (int i = 0; i < jarrayMySubscription.length(); i++) {
                 JSONObject c = jarrayMySubscription.getJSONObject(i);
                 Log.e(TAG,"jsonObject"+c);
-                /*
-                    "Magazineid":5,"MagazineName":"Spectrum Biology","thumbnail"*/
                 try{
                     if (c.has("Magazineid")) {
 
@@ -198,8 +196,8 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             pdia.cancel();
           subscribedMagazineAdapter.notifyDataSetChanged();
         Log.e(TAG, "result is" + result);
-        if(result==null)
-            Toast.makeText(getApplicationContext(), "Unable to fetch data from Server", Toast.LENGTH_SHORT).show();
+        if(result==false)
+            Toast.makeText(getApplicationContext(), "No Internat Connection", Toast.LENGTH_SHORT).show();
     }
 }
     public byte[] converttoBitmap(String thumbnail){
@@ -253,7 +251,7 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             intent.putExtra("DownloadingURL",urlForDownloadFinal);
             startActivity(intent);
             if(result==false){
-                Log.e(TAG,"Unable to fetch data");
+                Log.e(TAG,"No Internet Connection");
             }
         }
     }

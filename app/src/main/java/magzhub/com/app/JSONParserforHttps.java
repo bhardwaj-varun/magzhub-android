@@ -337,10 +337,12 @@ public class JSONParserforHttps {
                         TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
             }}
             connection.connect();
+
         }catch (Exception e){
             e.printStackTrace();
             Log.e(TAG, "error in connection.connect");
         }
+        if(connection!=null){
         try{
             int status=connection.getResponseCode();
             Log.e(TAG,"Status "+status);
@@ -367,9 +369,10 @@ public class JSONParserforHttps {
         }catch (Exception e){
             e.printStackTrace();
             Log.e(TAG,"Error in Parsing JSON");
-        }
+        }}
         return jarrayofMagazines;
     }
+
 }
 
 

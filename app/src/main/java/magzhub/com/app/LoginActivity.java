@@ -167,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String strFromDoInBg) {
             super.onPostExecute(strFromDoInBg);
             pdialog.dismiss();
-            if(strFromDoInBg.equals(null))
+            if(strFromDoInBg==null)
                 Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
         }
     }
@@ -184,8 +184,6 @@ public class LoginActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        // if no network is available networkInfo will be null
-        // otherwise check if we are connected
         if (networkInfo != null && networkInfo.isConnected()) {
             return true;
         }

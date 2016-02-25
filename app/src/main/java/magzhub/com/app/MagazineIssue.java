@@ -27,6 +27,8 @@ import java.util.List;
 public class MagazineIssue extends ActionBarActivity {
     ProgressDialog progressDialogIssue;
     String urlMagazineIssue="https://magzhub.com/services/IssuesOfMagazine.php";
+    private String urlForDownloadFinal=null,urlgoogledrive,urlForDownload="https://docs.google.com/uc?id=ENTER_URL_&export=download";
+
     String urlIssueMagRead;
     JSONArray jsonArrayMagazineIssue;
     JSONObject jsonObjectMagazineIssue;
@@ -157,7 +159,42 @@ public class IssueMagAsyncTask extends AsyncTask<String,Void,Boolean>{
                 //  for(int i=0; i<jsonArrayReading.length();i++) {
                 //  jsonObjectReading = jsonArrayReading.getJSONObject(i);
                 Log.e(TAG,"JSONObject "+jsonObjectReading);
-                urlIssueMagRead=jsonObjectReading.getString("url");
+
+                urlgoogledrive=jsonObjectReading.getString("url");
+                Log.e(TAG,"extracted url is : "+urlgoogledrive);
+                String extractingSubString= urlgoogledrive.substring(urlgoogledrive.indexOf("d/") + 2 , urlgoogledrive.lastIndexOf("/preview"));
+                Log.e(TAG,"extracted substring i"+ extractingSubString);
+                //https://docs.google.com/uc?id=0B1peh-y5ILoUd1JoNm5xM1ZCbmc&export=download
+                urlForDownloadFinal=urlForDownload.replace("ENTER_URL_",extractingSubString);
+                Log.e(TAG,"Final Download Link"+urlForDownloadFinal);
+                //}
+                return true;
+            }catch (Exception e){
+                Log.e(TAG,"Errorn in getting jsonobject for reading");
+                e.printStackTrace();
+            }
+            //makingconnectionForJSONArray
+            return false;
+        }
+        @Override
+        protected void onPostExecute(Boolean result){
+            Intent intent= new Intent(MagazineIssue.this,ReadingMagazine.class);
+            Log.e(TAG,"urlgoogledrive"+urlgoogledrive);
+            //  intent.putExtra("URL",urlgoogledrive);
+            intent.putExtra("DownloadingURL",urlForDownloadFinal);
+            startActivity(intent);
+            if(result==false){
+                Log.e(TAG,"No Internet Connection");
+            }
+        }
+              /* // urlIssueMagRead=jsonObjectReading.getString("url");
+                urlgoogledrive=jsonObjectReading.getString("url");
+                Log.e(TAG,"extracted url is : "+urlgoogledrive);
+                String extractingSubString= urlgoogledrive.substring(urlgoogledrive.indexOf("d/") + 2 , urlgoogledrive.lastIndexOf("/preview"));
+                Log.e(TAG,"extracted substring i"+ extractingSubString);
+                //https://docs.google.com/uc?id=0B1peh-y5ILoUd1JoNm5xM1ZCbmc&export=download
+                urlForDownloadFinal=urlForDownload.replace("ENTER_URL_",extractingSubString);
+                Log.e(TAG,"Final Download Link"+urlForDownloadFinal);
                 //}
                 return true;
             }catch (Exception e){
@@ -176,7 +213,7 @@ public class IssueMagAsyncTask extends AsyncTask<String,Void,Boolean>{
             if(result==false){
                 Log.e(TAG,"Unable to fetch data");
             }
-        }
+        }*/
     }
 
     @Override

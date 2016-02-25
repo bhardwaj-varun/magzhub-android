@@ -62,10 +62,12 @@ public class ReadingMagazine extends AppCompatActivity{
         webview.loadUrl("javascript:goNext()");
     }
     public void DownloadandRead(String urlDownloadingBook){
+
         String pathforReading= Environment.getExternalStorageDirectory().toString()+"/Android/data/com.magzhub.app/";
          Log.d("Files", "Path: " + pathforReading);
 
         File f = new File(pathforReading);
+        if(f.exists()){
         File listFiles[] = f.listFiles();
         Log.d("Files", "Size: "+ listFiles.length);
         for (int i=0; i < listFiles.length; i++)
@@ -76,8 +78,7 @@ public class ReadingMagazine extends AppCompatActivity{
                 IsDownloaded=true;
                 break;
             }
-
-        }
+        }}
         if(!IsDownloaded)
             new ATDownloadingmagazine().execute(urlDownloadingBook);
         else
