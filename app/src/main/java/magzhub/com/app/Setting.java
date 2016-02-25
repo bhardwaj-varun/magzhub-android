@@ -21,7 +21,6 @@ public class Setting extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         Toolbar toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
         getSupportActionBar().setTitle("Magzhub");
@@ -37,10 +36,11 @@ public class Setting extends ActionBarActivity {
                     if (sessionManagement.isLoggedIn()) {
                         userId = sessionManagement.getUserId();
                         userName = sessionManagement.getProfileDetail();
-                        Log.e("TAG", "UserId: " + userId + "UserName : " + userName);
+                        Log.e(TAG, "UserId: " + userId + "UserName : " + userName);
                     }
                     LoginActivity.ClearCookies(Setting.this);
                     Log.e(TAG, "cookies of JSONParserforHttps" + JSONParserforHttps.firstConnection);
+                    JSONParserforHttps.firstConnection=true;
                     sessionManagement.logoutUser();
                     Intent i = new Intent(Setting.this, Launcher.class);
                     //i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -59,6 +59,4 @@ public class Setting extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_setting, menu);
         return true;
     }
-
-
 }

@@ -365,7 +365,6 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
 
             }
         });
-
         alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
