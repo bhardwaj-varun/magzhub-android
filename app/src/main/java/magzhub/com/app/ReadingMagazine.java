@@ -131,7 +131,7 @@ public class ReadingMagazine extends AppCompatActivity{
         }
         protected void onProgressUpdate(String... progress) {
             Log.d("ANDRO_ASYNC", progress[0]);
-            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+         //   mProgressDialog.setProgress(Integer.parseInt(progress[0]));
         }
         @Override
         protected void onPostExecute(String unused){
