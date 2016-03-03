@@ -19,6 +19,7 @@
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
+
         </LinearLayout>
 
         <FrameLayout
@@ -33,6 +34,15 @@
             tools:listitem="@layout/row_subscribed_magazine"
             >
         </ListView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noSubscribedMagazinestv"
+            android:clickable="false"
+            android:visibility="gone"
+            android:textSize="20dp"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"/>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="10dp"

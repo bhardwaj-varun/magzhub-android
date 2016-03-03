@@ -22,13 +22,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 public class MagazineIssue extends ActionBarActivity {
     ProgressDialog progressDialogIssue;
     String urlMagazineIssue="https://magzhub.com/services/IssuesOfMagazine.php";
     private String urlForDownloadFinal=null,urlgoogledrive,urlForDownload="https://docs.google.com/uc?id=ENTER_URL_&export=download";
-
     String urlIssueMagRead;
     JSONArray jsonArrayMagazineIssue;
     JSONObject jsonObjectMagazineIssue;
@@ -38,7 +35,6 @@ public class MagazineIssue extends ActionBarActivity {
     IssueSubscribedMagazineAdapter  issuedMagAdapter;
     ArrayList<Magazine> issueSubMagazineList;
     String TAG="Magazine Issue";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,14 +45,12 @@ public class MagazineIssue extends ActionBarActivity {
         toolbar.setTitle("Magzhub");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         issueSubMagazineList= new ArrayList<Magazine>();
-        issuedMagazine= new Magazine();
+        //issuedMagazine= new Magazine();
         intent= getIntent();
         receivedMagId=intent.getStringExtra("MagIdforIssue");
         Log.e(TAG,"received Mag Id"+receivedMagId);
         new IssueMagAsyncTask().execute(receivedMagId);
-
         ListView magIssuelistview=(ListView)findViewById(R.id.list_issued_magazines);
         issuedMagAdapter= new IssueSubscribedMagazineAdapter(getApplicationContext(),R.layout.row_issued_magazine,issueSubMagazineList);
         magIssuelistview.setAdapter(issuedMagAdapter);
@@ -73,6 +67,9 @@ public class MagazineIssue extends ActionBarActivity {
     }
 public class IssueMagAsyncTask extends AsyncTask<String,Void,Boolean>{
     JSONParserforHttps jsonIssueMagazine;
+    int issueIdOfMag=0;
+    int getIssueCalls=0;
+    int TotalCount=-1;
 //    ProgressDialog progressDialogIssue;
     private String TAG="IssueMagAsyncTask";
     @Override
@@ -83,53 +80,93 @@ public class IssueMagAsyncTask extends AsyncTask<String,Void,Boolean>{
         progressDialogIssue.setIndeterminate(true);
         progressDialogIssue.setCancelable(true);
         progressDialogIssue.show();
-
     }
+    public void getIssues(String magid){
+        getIssueCalls++;
+        jsonIssueMagazine= new JSONParserforHttps();
+        int count=0;
+        //int magid=params[0];
+        Log.e(TAG,"receivedMagId prameter"+magid);
+        List<NameValuePair> listIssue= new ArrayList<NameValuePair>();
+        listIssue.add(new BasicNameValuePair("MagazineId", magid));
+        listIssue.add(new BasicNameValuePair("issueIdOfMag",Integer.toString(issueIdOfMag)));
+        try{
+            jsonArrayMagazineIssue=jsonIssueMagazine.makingconnectionForJSONArray(urlMagazineIssue,listIssue,"POST");
+            count=jsonArrayMagazineIssue.length();
+            Log.e(TAG," Length of jsonArrayMagazineIssue"+count);
+            if(jsonArrayMagazineIssue!=null){
+                if(TotalCount==-1)
+                    TotalCount=0;
+                TotalCount += count;
+            for(int i=0; i<jsonArrayMagazineIssue.length();i++){
+                jsonObjectMagazineIssue=jsonArrayMagazineIssue.getJSONObject(i);
+                Log.e(TAG,"jsonObjectMagazineIssue : "+jsonObjectMagazineIssue);
+                    /*"issueid":13,"issueName":"June (2015)","issueThumbnail":*/
+                //if(jsonObjectMagazineIssue.has("issueid")){
+                String issueMagName=jsonObjectMagazineIssue.getString("issueName");
+                String issueMagThumbnail=jsonObjectMagazineIssue.getString("issueThumbnail");
+                String issueMagId=Integer.toString(jsonObjectMagazineIssue.getInt("issueid"));
+                Log.e("DATA","issueMagName"+issueMagName+"issueMagId"+issueMagId);
+                issuedMagazine= new Magazine();//creating different objects for each issues;
+                issuedMagazine.setIssueId(issueMagId);
+                issuedMagazine.setMagazineIssueThumbnail(converttoBitmap(issueMagThumbnail));
+                issuedMagazine.setMagazineIssueName(issueMagName);
+                issueSubMagazineList.add(issuedMagazine);
+                issueIdOfMag=Integer.parseInt(issueMagId);
+            }
+            if(count==1)
+                getIssues(Integer.toString(issueIdOfMag));
+            }
+            else
+                TotalCount+=0;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        }
     @Override
     protected Boolean doInBackground(String... params){
-        jsonIssueMagazine= new JSONParserforHttps();
-        String recievedMagIdforIssue=params[0];
-        Log.e(TAG,"receivedMagId prameter"+recievedMagIdforIssue);
+        //jsonIssueMagazine= new JSONParserforHttps();
+        String recievedMagIdforIssue=(params[0]);
+        getIssues(recievedMagIdforIssue);
+        if(TotalCount>=0)
+            return true;
+        /*Log.e(TAG,"receivedMagId prameter"+recievedMagIdforIssue);
         List<NameValuePair> listIssue= new ArrayList<NameValuePair>();
         listIssue.add(new BasicNameValuePair("MagazineId", recievedMagIdforIssue));
-
         try{
             jsonArrayMagazineIssue=jsonIssueMagazine.makingconnectionForJSONArray(urlMagazineIssue,listIssue,"POST");
             Log.e(TAG," Length of jsonArrayMagazineIssue"+jsonArrayMagazineIssue.length());
             for(int i=0; i<jsonArrayMagazineIssue.length();i++){
                 jsonObjectMagazineIssue=jsonArrayMagazineIssue.getJSONObject(i);
                 Log.e(TAG,"jsonObjectMagazineIssue : "+jsonObjectMagazineIssue);
-                    /*"issueid":13,"issueName":"June (2015)","issueThumbnail":*/
+                    /*"issueid":13,"issueName":"June (2015)","issueThumbnail":
                 //if(jsonObjectMagazineIssue.has("issueid")){
                     String issueMagName=jsonObjectMagazineIssue.getString("issueName");
                     String issueMagThumbnail=jsonObjectMagazineIssue.getString("issueThumbnail");
                     String issueMagId=Integer.toString(jsonObjectMagazineIssue.getInt("issueid"));
                     Log.e("DATA","issueMagName"+issueMagName+"issueMagId"+issueMagId);
+                    issuedMagazine= new Magazine();//creating different objects for each issues;
                     issuedMagazine.setIssueId(issueMagId);
                     issuedMagazine.setMagazineIssueThumbnail(converttoBitmap(issueMagThumbnail));
                     issuedMagazine.setMagazineIssueName(issueMagName);
                     issueSubMagazineList.add(issuedMagazine);
             }
-
             return true;
         }catch (Exception e){
             e.printStackTrace();
-        }
-
-
-
-        return false;
+        }*/
+        else
+            return false;
     }
-
     @Override
     protected void onPostExecute(Boolean result){
         issuedMagAdapter.notifyDataSetChanged();
         progressDialogIssue.dismiss();
         if(result==false)
-            Toast.makeText(MagazineIssue.this,"Unable to fetch data",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MagazineIssue.this,"No internet connection",Toast.LENGTH_SHORT).show();
     }
-
-
 }
     public byte[] converttoBitmap(String thumbnail){
         byte[] imageAsByes= Base64.decode(thumbnail.getBytes(), Base64.DEFAULT);

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +22,12 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 public class ReadingMagazine extends AppCompatActivity{
     private WebView webview;
@@ -39,10 +43,10 @@ public class ReadingMagazine extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
-        webview = (WebView) findViewById(R.id.webview);
-        leftSlide=(ImageButton)findViewById(R.id.leftSlideBtn);
+      //  webview = (WebView) findViewById(R.id.webview);
+       // leftSlide=(ImageButton)findViewById(R.id.leftSlideBtn);
 
-        rightSlide=(ImageButton)findViewById(R.id.rightSlideBtn);
+       // rightSlide=(ImageButton)findViewById(R.id.rightSlideBtn);
         Intent intent = getIntent();
         // String receivedUrl= intent.getStringExtra("URL");
         String receivedUrl = intent.getStringExtra("DownloadingURL");
@@ -54,13 +58,13 @@ public class ReadingMagazine extends AppCompatActivity{
         DownloadandRead(receivedUrl);
 
     }
-    public void LeftSlideBtnClick(View view){
+ /*   public void LeftSlideBtnClick(View view){
         webview.loadUrl("javascript:goPrevious()");
 
     }
     public void RightSlideBtnClick(View view){
         webview.loadUrl("javascript:goNext()");
-    }
+    }*/
     public void DownloadandRead(String urlDownloadingBook){
 
         String pathforReading= Environment.getExternalStorageDirectory().toString()+"/Android/data/com.magzhub.app/";
@@ -72,19 +76,26 @@ public class ReadingMagazine extends AppCompatActivity{
         Log.d("Files", "Size: "+ listFiles.length);
         for (int i=0; i < listFiles.length; i++)
         {
-            Log.e("Files", "FileName:" + listFiles[i].getName());
+            Log.e("Files", i+"FileName:" + listFiles[i].getName());
             if(listFiles[i].getName().equals(bookId+".pdf"))
             {
                 IsDownloaded=true;
                 break;
             }
         }}
-        if(!IsDownloaded)
+        if(!IsDownloaded) {
+            Log.e(TAG,"IsDownloaded"+IsDownloaded+"Downloading book");
             new ATDownloadingmagazine().execute(urlDownloadingBook);
-        else
+        }
+        else {
+            Log.e(TAG,"IsDownloaded"+IsDownloaded+"Reading Book,");
             startReading();
+        }
+    }
+    public void MagazineDownloadingwdThread(){
 
     }
+
         public class ATDownloadingmagazine extends AsyncTask<String,String,String>
     {
         JSONParserforHttps jsonMagazineDownload=new JSONParserforHttps();
@@ -100,7 +111,6 @@ public class ReadingMagazine extends AppCompatActivity{
         @Override
         protected String doInBackground(String... arg){
             urlForDownload=arg[0];
-
             int count;
             receivedStream=jsonMagazineDownload.downloadingFile(urlForDownload);
             File MagzFile=new File(Environment.getExternalStorageDirectory().toString()+"/Android/data/com.magzhub.app/");
@@ -141,7 +151,8 @@ public class ReadingMagazine extends AppCompatActivity{
         }
     }
     public void startReading(){
-        WebSettings settings=webview.getSettings();
+        //Reading with pdf.js
+      /*  WebSettings settings=webview.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
         // settings.setPluginState(WebSettings.PluginState.ON);
@@ -161,7 +172,44 @@ public class ReadingMagazine extends AppCompatActivity{
             webview.loadUrl("file:///android_asset/pdfviewer/index.html?file=file:///"+path1);
         }
         catch (Exception e){
+            Log.e(TAG,"Error while reading ");
             e.printStackTrace();
+        }*/
+
+        PackageManager packageManager = getPackageManager();
+
+        Intent testIntent = new Intent(Intent.ACTION_VIEW);
+        testIntent.setType("application/pdf");
+
+        List list = packageManager.queryIntentActivities(testIntent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+
+        try {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+
+            File fileToRead = new File(Environment.getExternalStorageDirectory().toString()+"/Android/data/com.magzhub.app/"+bookId+".pdf");
+
+            //"/data/data/com.example.filedownloader/app_books/Book.pdf");
+            Uri uri = Uri.fromFile(fileToRead.getAbsoluteFile());
+
+            intent.setDataAndType(uri, "application/pdf");
+            startActivity(intent);
+        } catch (Exception ex) {
+            Log.i(getClass().toString(), ex.toString());
+            Toast.makeText(ReadingMagazine.this,
+                    "Cannot open your selected file, try again later",
+                    Toast.LENGTH_SHORT).show();
+    }}
+   /* @Override
+    public void onBackPressed(){
+        //added on 27feb
+        Log.e(TAG,"Onbackpressed is called");
+        if (webview.canGoBack()) {
+            webview.goBack();
+            return;
         }
-    }
+        super.onBackPressed();
+    }*/
+
 }

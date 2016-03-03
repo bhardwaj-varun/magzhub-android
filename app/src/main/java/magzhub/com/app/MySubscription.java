@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -37,11 +38,14 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
     SubscribedMagazineAdapter subscribedMagazineAdapter;
     static String MagIdforReceived;
     Magazine magObjSubsHandling;
+    TextView noSubscribedMagazinetv;
     Magazine fetchsubmagazine,MagObjSubsHandling;// = new Magazine();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_subscription);
+        noSubscribedMagazinetv=(TextView)findViewById(R.id.noSubscribedMagazinestv);
         magObjSubsHandling= new Magazine();
         ToolbarHandling();
         SubscribedMagazineList= new ArrayList<Magazine>();
@@ -62,15 +66,12 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
                     new AsyncTaskReadingMag().execute(SubscribedMagazineList.get(position).getMagazineId());
 
                 } else if (viewId == R.id.subMagIssue) {
-
                     Intent i = new Intent(MySubscription.this, MagazineIssue.class);
                     i.putExtra("MagIdforIssue", SubscribedMagazineList.get(position).getMagazineId());
                     startActivity(i);
-
                 } else if (viewId == R.id.subMagSubsStatus) {
                     btnChangedText=(Button)findViewById(view.getId());
                     AlertforUnsubscription(view, SubscribedMagazineList.get(position).getMagazineId());
-
                     //btnChangedText.setText("hello");
                    /* if(return_answer==true){
                     new AsyncTaskforMagazineSubscriptionHandling().execute(SubscribedMagazineList.get(position).getMagazineId());
@@ -78,7 +79,6 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
                     Log.e(TAG,"changed Status"+ChangedStatus);
                 }*/
                 }
-
             }
         });
 
@@ -136,13 +136,15 @@ public class MySubscription extends AppCompatActivity implements FragmentDrawer.
                // new MySubscriptionAsyncTask().execute();
             Log.e(TAG, "Changed Status" + ChangedStatus);
             if(result==false)
-                Toast.makeText(getApplicationContext(),"Error in Connection",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Problem in network connection, try again later",Toast.LENGTH_SHORT).show();
         }
     }
-public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
+public class MySubscriptionAsyncTask extends AsyncTask<String, Void,String>{
     String url="https://magzhub.com/services/displaySubscribedMagazineOfUser.php";
     JSONArray jarrayMySubscription;
     String submid,subname,subthumbnail;
+    int subIdOfMag=0,gettingSubMagCalls=0;
+    int TotalCount=-1;
     @Override
     protected void onPreExecute(){
         pdia= new ProgressDialog(MySubscription.this);
@@ -151,9 +153,82 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
         pdia.setIndeterminate(true);
         pdia.show();
     }
+    public void GetingSubscribedMagazines(){
+        TAG="GetingSubscribedMagazines()";
+        int count=0;
+        gettingSubMagCalls++;
+        Log.e(TAG,"function called for times "+gettingSubMagCalls);
+
+        JSONParserforHttps jParser = new JSONParserforHttps();
+            List<NameValuePair> magParam= new ArrayList<NameValuePair>();
+            magParam.add(new BasicNameValuePair("subId",Integer.toString(subIdOfMag)));
+        try{
+            jarrayMySubscription = jParser.makingconnectionForJSONArray(url,magParam,"POST");
+            //String s = jParser.getStringFromUrl(yourJsonStringUrl);
+           /* Log.e(TAG, "SIZE : " + jarrayMySubscription.length());
+            // loop through all users*/
+            Log.e(TAG,"inside try");
+            if(jarrayMySubscription!=null)
+            {
+                count=jarrayMySubscription.length();
+                Log.e(TAG,"SIZE"+jarrayMySubscription.length());
+                if(TotalCount==-1)
+                    TotalCount=0;
+                TotalCount += count;
+                for (int i = 0; i < jarrayMySubscription.length(); i++) {
+                JSONObject c = jarrayMySubscription.getJSONObject(i);
+                Log.e(TAG, "jsonObject" + c);
+                try {
+                    if (c.has("Magazineid")) {
+                        submid = Integer.toString(c.getInt("Magazineid"));
+                        String submname = c.getString("MagazineName");
+
+                        String submthumbnail = c.getString("magazineThumbnail");
+                        Log.e(TAG, "id:" + submid
+                                + " name:" + submname + "thumbnail : " + submthumbnail);
+                        // Magazine fetchsubmagazine = new Magazine();
+                        if(submname=="null")
+                        {
+                            Log.e(TAG,"subname"+submname);
+                            JSONObject temp=jarrayMySubscription.getJSONObject((2*(i)-1));
+                            subIdOfMag=temp.getInt("Magazineid");
+                            Log.e(TAG,"SubMagID"+subIdOfMag);
+                            break;
+                        }
+                        fetchsubmagazine = new Magazine();
+                        fetchsubmagazine.setMagazineId(submid);
+                        fetchsubmagazine.setMagazineName(submname);
+                        fetchsubmagazine.setMagazineThumbnail(converttoBitmap(submthumbnail));
+                        Log.e(TAG, "Magid" + submid);
+                        SubscribedMagazineList.add(fetchsubmagazine);
+                        count++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error in my subs jason data");
+                }
+            }
+                if(count==8)
+                    GetingSubscribedMagazines();
+            }
+        else
+             TotalCount+=0;
+
+        }catch (Exception e){
+            Log.e(TAG,"Error in json connection");
+            e.printStackTrace();
+        }
+    }
     @Override
-    protected Boolean doInBackground(String... params){
-        try {
+    protected String doInBackground(String... params){
+       GetingSubscribedMagazines();
+        if(TotalCount>0)
+            return "Success";
+        else if((gettingSubMagCalls==1)&&TotalCount==0 )
+            return "NoMagazine";
+        else
+            return "FetchingFailed";
+       /* try {
             // instantiate our json parser
             JSONParserforHttps jParser = new JSONParserforHttps();
             jarrayMySubscription = jParser.getJSONArrayHTTPS(url);
@@ -165,8 +240,7 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
                 Log.e(TAG,"jsonObject"+c);
                 try{
                     if (c.has("Magazineid")) {
-
-                        submid = Integer.toString(c.getInt("Magazineid"));
+                         submid = Integer.toString(c.getInt("Magazineid"));
                         String submname = c.getString("MagazineName");
                         String submthumbnail = c.getString("thumbnail");
                         Log.e(TAG, "id:" + submid
@@ -187,17 +261,21 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return false;
+        }*/
+        //return false;
     }
     @Override
-    protected void onPostExecute(Boolean result){
+    protected void onPostExecute(String result){
 
             pdia.cancel();
           subscribedMagazineAdapter.notifyDataSetChanged();
         Log.e(TAG, "result is" + result);
-        if(result==false)
-            Toast.makeText(getApplicationContext(), "No Internat Connection", Toast.LENGTH_SHORT).show();
+        if(result.equals("FetchingFailed"))
+            Toast.makeText(MySubscription.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
+        else if (result.equals("NoMagazine"))
+            noSubscribedMagazinetv.setText("You have not subscribed any magazine yet. Please subscribe ");
+             noSubscribedMagazinetv.setVisibility(View.VISIBLE);
     }
 }
     public byte[] converttoBitmap(String thumbnail){
@@ -252,6 +330,7 @@ public class MySubscriptionAsyncTask extends AsyncTask<String, Void,Boolean>{
             startActivity(intent);
             if(result==false){
                 Log.e(TAG,"No Internet Connection");
+                Toast.makeText(MySubscription.this, "No Interent Connection",Toast.LENGTH_SHORT).show();
             }
         }
     }

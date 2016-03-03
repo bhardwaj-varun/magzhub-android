@@ -71,11 +71,13 @@ public class Getting_Magazines extends ActionBarActivity {
                     Log.e(TAG, "mlsubsbtn clicked");
                     magObChngStatusHandling.setMagazineId(MagazineList.get(position).getMagazineId());
                     magObChngStatusHandling.setSubscriptionStatus(MagazineList.get(position).getSubscriptionStatus());
+                    magObChngStatusHandling.setResult_status(MagazineList.get(position).getResult_status());
+                    Log.e(TAG,"before subscription activity: resultstatus set is "+magObChngStatusHandling.getResult_status());
                     new AsyncTaskforMagazineSubscription().execute(MagazineList.get(position).getMagazineId());
                     Button btn=(Button)findViewById(view.getId());
-                    String changedstatus=SubscriptionHandling(magObChngStatusHandling);
-                    btn.setText(changedstatus);
-                    Log.d("Btnstatuschnged","prvs status "+magObChngStatusHandling.getSubscriptionStatus()+" now status"+changedstatus);
+                    //String changedstatus=SubscriptionHandling(magObChngStatusHandling.getResult_status(),magObChngStatusHandling.getSubscriptionStatus());
+                    //btn.setText(changedstatus);
+                    //Log.d("Btnstatuschnged","prvs status "+magObChngStatusHandling.getSubscriptionStatus()+" now status"+changedstatus);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "ListView clicked: " + id, Toast.LENGTH_SHORT).show();
@@ -94,6 +96,10 @@ public class Getting_Magazines extends ActionBarActivity {
     public  class AsyncTaskforMaagazines extends AsyncTask<String,Void,String>{
         String yourJsonStringUrl = "https://www.magzhub.com/services/ClassMagazine.php";
         String statusAfterFetching;
+        int magIdForCategory=0;
+        int GetMagcalls=0;
+        int TotalCount=-1;
+        Boolean isMagazineCountZero=true;
         // contacts JSONArray
         JSONArray jsonmagz;
         @Override
@@ -106,17 +112,80 @@ public class Getting_Magazines extends ActionBarActivity {
             pdialog3.setIndeterminate(false);
             pdialog3.show();
         }
+        protected void GetMagazine(int catId){
+            int count=0;
+            GetMagcalls++;
+            String msubscriptionstatus, mid;
+            try {
+                JSONParserforHttps jParserml = new JSONParserforHttps();
+                Log.e(TAG, "ValuePassed" + catId);
+                List<NameValuePair> paramsml = new ArrayList<NameValuePair>();
+                paramsml.add(new BasicNameValuePair("catid", Integer.toString(catId)));
+                paramsml.add(new BasicNameValuePair("magIdForCategory", Integer.toString(magIdForCategory)));
+                jsonmagz = jParserml.makingconnectionForJSONArray(yourJsonStringUrl, paramsml, "POST");
+
+                if (jsonmagz != null) {
+                    Log.e(TAG, "SIZE : " + jsonmagz.length());
+                    count = jsonmagz.length();
+                    if(TotalCount==-1)
+                        TotalCount=0;
+                    TotalCount += count;
+                    for (int i = 0; i < jsonmagz.length(); i++) {
+                        try {
+                            JSONObject c = jsonmagz.getJSONObject(i);
+                            if (c.has("MagazineId")) {
+                                mid = Integer.toString(c.getInt("MagazineId"));
+                                String mname = c.getString("MagazineName");
+                                String mthumbnail = c.getString("magazineThumbnail");
+                                msubscriptionstatus = c.getString("subscriptionstatus");
+                                Log.e(TAG, "id:" + mid
+                                        + " name:" + mname + "subscriptionstatus: " + msubscriptionstatus);
+                                Magazine fetchmagazine = new Magazine();
+                                fetchmagazine.setMagazineId(mid);
+                                fetchmagazine.setMagazineName(mname);
+                                fetchmagazine.setSubscriptionStatus(msubscriptionstatus);
+                                fetchmagazine.setMagazineThumbnail(converttoBitmap(mthumbnail));
+                                MagazineList.add(fetchmagazine);
+                                magIdForCategory = Integer.parseInt(mid);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (count == 8)
+                        GetMagazine(catId);
+                }
+                else{
+                    TotalCount+=0;
+                }
+
+
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     @Override
         protected String doInBackground(String... arg0){
-        String msubscriptionstatus, mid;
-        try{
+        //String msubscriptionstatus, mid;
+        int catid=Integer.parseInt(arg0[0]);
+        GetMagazine(catid);
+        if(TotalCount>0)
+            return "Success";
+        else if((GetMagcalls==1)&&TotalCount==0 )
+            return "NoMagazine";
+        else
+            return "FetchingFailed";
+
+        /*try{
             JSONParserforHttps jParserml= new JSONParserforHttps();
-            int s= Integer.parseInt(arg0[0]);
-            Log.e(TAG,"ValuePassed"+s);
+        //    int s= Integer.parseInt(arg0[0]);
+          //  Log.e(TAG,"ValuePassed"+s);
             List<NameValuePair> paramsml = new ArrayList<NameValuePair>();
-            paramsml.add(new BasicNameValuePair("catid",Integer.toString(s)));
+            paramsml.add(new BasicNameVassluePair("catid",Integer.toString(s)));
             jsonmagz= jParserml.makingconnectionForJSONArray(yourJsonStringUrl,paramsml,"POST");
-            if(jsonmagz==null){
+
+           if(jsonmagz==null){
 
             }
             if(jsonmagz!=null){
@@ -152,31 +221,33 @@ public class Getting_Magazines extends ActionBarActivity {
                 return "NoMagazine";
             }
 
-        }catch (Exception e){
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
-
         return "FetchingFailed";
-    }
+
+        */
+
+           }
     @Override
         protected void onPostExecute(String result){
             pdialog3.cancel();
-            Log.e("OnPostxecute","result : "+result);
+            Log.e("OnPostxecute", "result : " + result);
 
             madapter.notifyDataSetChanged();
         if(result.equals("FetchingFailed"))
-            Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
-        else if(result.equals("NoMagazine"))
+            Toast.makeText(Getting_Magazines.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
+        else if (result.equals("NoMagazine"))
             noMagazinetv.setText("No magazines in this Category. Please go to another category");
             noMagazinetv.setVisibility(View.VISIBLE);
         }
-
     }
     public byte[] converttoBitmap(String thumbnail){
         byte[] imageAsByes= Base64.decode(thumbnail.getBytes(),Base64.DEFAULT);
         return imageAsByes;
      }
-
     public class AsyncTaskforMagazineSubscription extends AsyncTask<String,Void,Boolean>{
         JSONObject jsonObjectforMagazineSubscription;
 
@@ -219,8 +290,13 @@ public class Getting_Magazines extends ActionBarActivity {
         @Override
         protected void onPostExecute(Boolean result){
             pdialog4.cancel();
+            //toast based on cases handled by SubscriptionHanling
+            String changedstatus=SubscriptionHandling(magObChngStatusHandling.getResult_status(),magObChngStatusHandling.getSubscriptionStatus());
+           // btn.setText(changedstatus);
+            Log.d("Btnstatuschnged", "prvs status " + magObChngStatusHandling.getSubscriptionStatus() + " now status" + changedstatus);
+            //to change btn status dynamically this intent is needed to restart again not done yet
             if(result==false)
-                Toast.makeText(getApplicationContext(),"Error in Connection",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Getting_Magazines.this,"Error in Connection",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -246,33 +322,39 @@ public class Getting_Magazines extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public String SubscriptionHandling(Magazine magazine) {
-        String ButtonSubscriptionStatus = magazine.getSubscriptionStatus();
-        int resultSubscribeStatus = magazine.getResult_status();
-        Log.e(TAG, "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
+  //  public String SubscriptionHandling(Magazine magazine) {
+    //    String ButtonSubscriptionStatus = magazine.getSubscriptionStatus();
+      //  int resultSubscribeStatus = magazine.getResult_status();
+    public String SubscriptionHandling(int result_status, String btn_Status)
+    {
+        String ButtonSubscriptionStatus = btn_Status;
+          int resultSubscribeStatus = result_status
+                  ;
+    Log.e(TAG, "SubscriptionStatus = " + ButtonSubscriptionStatus + " Result recieved = " + resultSubscribeStatus);
         if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 1) {
-            Toast.makeText(this, "Sucessfully Subscribed", Toast.LENGTH_LONG).show();
+            Toast.makeText(Getting_Magazines.this, "Sucessfully Subscribed", Toast.LENGTH_LONG).show();
             //Log.e(TAG, "Sucessfully Subscribed");
 
             ButtonSubscriptionStatus = "Unsubscribe";
         } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 0) {
-                Toast.makeText(this, "Sorry..! You can only subscribe maximum 10 magazines in a month", Toast.LENGTH_LONG).show();
+                Toast.makeText(Getting_Magazines.this, "Sorry..! You can only subscribe maximum 10 magazines in a month", Toast.LENGTH_LONG).show();
             Log.e(TAG, "Sorry..! You can only subscribe maximum 10 magazines in a month");
             ButtonSubscriptionStatus = "Subscribe";
+            //Current time rwuirement
         } else if (ButtonSubscriptionStatus.equals("Subscribe") && resultSubscribeStatus == 4) {
-                Toast.makeText(this, "Cannot Subscribe .. our account is not active..!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(Getting_Magazines.this, "Cannot Subscribe .. your account is not active..!!", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Cannot Subscribe .. your account is not active..!!");
             ButtonSubscriptionStatus = "Subscribe";
         } else if (ButtonSubscriptionStatus.equals("Unsubscribe") && resultSubscribeStatus == 2) {
-                    Toast.makeText(this, "Sucessfully Unsubscribed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Getting_Magazines.this, "Sucessfully Unsubscribed", Toast.LENGTH_LONG).show();
                     ButtonSubscriptionStatus = "Subscribe";
             //Log.e(TAG, "Sucessfully Unsubscribed");
-        } else if (ButtonSubscriptionStatus.equals("Unubscribe") && resultSubscribeStatus == 3) {
-                Toast.makeText(this, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!", Toast.LENGTH_LONG).show();
+        } else if (ButtonSubscriptionStatus.equals("Unsubscribe") && resultSubscribeStatus == 3) {
+                Toast.makeText(Getting_Magazines.this, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!", Toast.LENGTH_LONG).show();
             Log.e(TAG, "Can;t unsubscribe.. You can only subscribe magazine after 30 days of subscription..!!");
             ButtonSubscriptionStatus = "UnSubscribe";
         }
-        magazine.setSubscriptionStatus(ButtonSubscriptionStatus);
+      //  magazine.setSubscriptionStatus(ButtonSubscriptionStatus);
         return ButtonSubscriptionStatus;
     }
 }

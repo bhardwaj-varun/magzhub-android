@@ -25,7 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class JSONParserforHttps {
     static HttpsURLConnection connection;
-    private String TAG="JSONParserforHttps";
+    private String TAG="JSONParseHttpClass";
     static final String COOKIES_HEADER = "Set-Cookie";
    // static  int fileLength;
     static boolean firstConnection=true;
@@ -58,7 +58,6 @@ public class JSONParserforHttps {
         StringBuilder sb3= new StringBuilder();
          JSONArray jsonArray=null;
         try{
-
             URL url= new URL(stringUrl);
             connection= (HttpsURLConnection)url.openConnection();
         }catch (Exception e){
@@ -98,14 +97,13 @@ public class JSONParserforHttps {
                     }
                     br.close();
                     sb3.toString();
-                    Log.e("HTTPS connection : ","Json String "+ sb3.toString());
+                    Log.e(TAG,"Json String "+ sb3.toString());
             }
         }catch(Exception e){
             Log.e(TAG, "inputstream error ");
             e.printStackTrace();
         }
-
-        try {
+         try {
             jsonArray=new JSONArray(sb3.toString());
                 return jsonArray;
 
@@ -154,7 +152,6 @@ public class JSONParserforHttps {
                 try {
                     int responseCode = connection.getResponseCode();
                     Log.d(TAG, "responseCode ->" + responseCode);
-
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
                         Map<String, List<String>> headerFields = connection.getHeaderFields();
                         List<String> cookiesHeader = headerFields.get("Set-Cookie");
@@ -183,41 +180,12 @@ public class JSONParserforHttps {
                     }
                     br.close();
                     sb.toString();
-                    Log.e("HTTPS connection : ", "Json String " + sb.toString());
+                    Log.e(TAG, "Json String " + sb.toString());
 
         }catch (Exception e) {
             Log.e(TAG, "error in connection.connect");
             e.printStackTrace();
         }
-        /*try{
-            DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
-            wr.writeBytes(paramString);
-        }catch (Exception e) {
-            Log.e(TAG, "error in DataOutputStream ");
-            e.printStackTrace();
-        }*/
-
-        //getting response from server
-       /* try{
-            int status = connection.getResponseCode();
-            Log.e(TAG,"status"+status);
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    br.close();
-                    sb.toString();
-                    Log.e("HTTPS connection : ","Json String "+ sb.toString());
-            }
-        }catch(Exception e){
-            Log.e(TAG,"inputstream error ");
-            e.printStackTrace();
-        }
-*/
         try {
              jsonObject=new JSONObject(sb.toString());
             return jsonObject;
@@ -375,6 +343,35 @@ public class JSONParserforHttps {
 
 }
 
+        /*try{
+            DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
+            wr.writeBytes(paramString);
+        }catch (Exception e) {
+            Log.e(TAG, "error in DataOutputStream ");
+            e.printStackTrace();
+        }*/
+
+//getting response from server
+       /* try{
+            int status = connection.getResponseCode();
+            Log.e(TAG,"status"+status);
+            switch (status) {
+                case 200:
+                case 201:
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    sb.toString();
+                    Log.e("HTTPS connection : ","Json String "+ sb.toString());
+            }
+        }catch(Exception e){
+            Log.e(TAG,"inputstream error ");
+            e.printStackTrace();
+        }
+*/
 
 
 

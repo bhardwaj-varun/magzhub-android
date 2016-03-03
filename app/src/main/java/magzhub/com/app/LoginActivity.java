@@ -50,8 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
        // toolbar.setLogo(R.mipmap.ic_magzhub_logo);
         createVariable();
-        if(!isNetworkAvailable())
-            Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+        //if(!isNetworkAvailable())
+          //  Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
 
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,12 +181,20 @@ public class LoginActivity extends AppCompatActivity {
           msCookieManager.getCookieStore().removeAll();
     }
     public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager)
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
+       /* ConnectivityManager cm = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             return true;
         }
-        return false;
+        return false;*/
     }
 }

@@ -128,7 +128,7 @@ public class Categories extends ActionBarActivity {
             pdialog2.cancel();
             adapter.notifyDataSetChanged();
             if(result == false)
-                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
     }
     public byte[] converttoBitmap(String thumbnail) {
