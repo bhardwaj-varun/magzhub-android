@@ -24,7 +24,7 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
-
+//session[PHPSESSID=1974otfthqcemv8e43bigj9hf5, PHPSESSID=1974otfthqcemv8e43bigj9hf5]
 
 public class LoginActivity extends AppCompatActivity {
     int success;
@@ -35,7 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     SessionManagement sessionManagement;
     static CookieManager msCookieManager= new CookieManager();
     static CookieHandler cookieHandler;
+    static String sessionId;//for setting session in shared preference
     static String username;
+    static String sessionIdfrmSharedPrefernce;//getting session fromsharedPreference for maintaining session in JSONPARSERCLAss;
+    static Boolean isLoginStatus; //getting and stored IsLogin value from sharedprference
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         // getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setLogo(R.mipmap.ic_launcher_magzhub_transparent_logo);
         getSupportActionBar().setTitle("Magzhub");
-
+        isLoginStatus=sessionManagement.getIsLoginStatus();
         //  Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
        // toolbar.setLogo(R.mipmap.ic_magzhub_logo);
         createVariable();
@@ -72,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         String yourJsonStringUrl="https://magzhub.com/services/authenticateExistingUser.php";
         // contacts JSONArray
         JSONArray dataJsonArr = null;
-
+        JSONParserforHttps jParser;
 
         @Override
         protected void onPreExecute() {
@@ -92,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
 
                 // instantiate our json parser
-                JSONParserforHttps jParser = new JSONParserforHttps();
+               jParser = new JSONParserforHttps();
 
                 String email=et.getText().toString();
                 String password=pass.getText().toString();
@@ -131,7 +135,8 @@ public class LoginActivity extends AppCompatActivity {
                                     //sessionManagement.createLoginSession(success);
                                     //String getUserName=json.getString("custommessage");
                                     //sessionManagement.setProfile(getUserName);
-                                    sessionManagement.createLoginSession(json.getInt("userid"));
+                                    sessionId=msCookieManager.getCookieStore().getCookies().toString();
+                                    sessionManagement.createLoginSession(json.getInt("userid"),sessionId);
                                     sessionManagement.setProfile(messagefromJson);
                                     username=messagefromJson.toString();
                                     Log.e(TAG,"Username="+username);
@@ -167,6 +172,10 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String strFromDoInBg) {
             super.onPostExecute(strFromDoInBg);
             pdialog.dismiss();
+            sessionIdfrmSharedPrefernce=sessionManagement.getServerSessoinId();
+            isLoginStatus=sessionManagement.getIsLoginStatus();
+            Log.e(TAG,"session stored in shared preference "+sessionIdfrmSharedPrefernce);
+            //E/AsyncTask_JPHttps﹕ session stored in shared preference [PHPSESSID=dcv6d09mm57fq1iphnsic13ff6, PHPSESSID=dcv6d09mm57fq1iphnsic13ff6]
             if(strFromDoInBg==null)
                 Toast.makeText(LoginActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
         }

@@ -98,6 +98,7 @@ public class Getting_Magazines extends ActionBarActivity {
         String statusAfterFetching;
         int magIdForCategory=0;
         int GetMagcalls=0;
+
         int TotalCount=-1;
         Boolean isMagazineCountZero=true;
         // contacts JSONArray
@@ -115,6 +116,7 @@ public class Getting_Magazines extends ActionBarActivity {
         protected void GetMagazine(int catId){
             int count=0;
             GetMagcalls++;
+            Log.e(TAG,"GetMagazine called for "+ GetMagcalls);
             String msubscriptionstatus, mid;
             try {
                 JSONParserforHttps jParserml = new JSONParserforHttps();

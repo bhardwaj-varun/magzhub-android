@@ -29,9 +29,12 @@ public class JSONParserforHttps {
     static final String COOKIES_HEADER = "Set-Cookie";
    // static  int fileLength;
     static boolean firstConnection=true;
+ //   boolean loggedIn= LoginActivity.isLoginStatus;
+      //  static boolean firstConnection=!(LoginActivity.isLoginStatus);
+
     static Map<String, List<String>> headerFields;
     static List<String> cookiesHeader;
-
+    private String sessionIdSP;
 
     public String convertNameValuePairToString(List<NameValuePair> params) {
         StringBuilder result = new StringBuilder();
@@ -53,9 +56,11 @@ public class JSONParserforHttps {
         }
         return result.toString();
     }
+
      public JSONArray makingconnectionForJSONArray(String stringUrl, List<NameValuePair> params, String method) {
          //HttpsURLConnection connection;
-        StringBuilder sb3= new StringBuilder();
+        Log.e(TAG,"First Connectonn Value from Shared Preference"+firstConnection);
+         StringBuilder sb3= new StringBuilder();
          JSONArray jsonArray=null;
         try{
             URL url= new URL(stringUrl);
@@ -68,10 +73,13 @@ public class JSONParserforHttps {
         try{
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
-            if(firstConnection==false) {
+           // settingSessionfromSharedPreference();
+
+            if (firstConnection == false) {
                 Log.e(TAG, "cookie length" + LoginActivity.msCookieManager.getCookieStore().getCookies().size());
+                Log.e("Cokie cleared value"," : "+LoginActivity.msCookieManager.getCookieStore().getCookies().size());
                 if (LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
-                    //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
+                    //While joining the Cookies, use ',' or ';' as Loneeded. Most of the server are using ';'
                     connection.setRequestProperty("Cookie",
                             TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
                 }
@@ -105,6 +113,7 @@ public class JSONParserforHttps {
         }
          try {
             jsonArray=new JSONArray(sb3.toString());
+             Log.e(TAG,"jsonarray"+jsonArray.length());
                 return jsonArray;
 
         }catch (Exception e) {
@@ -130,10 +139,13 @@ public class JSONParserforHttps {
             connection.setDoOutput(true);
             if(firstConnection==false) {
                 Log.e(TAG, "cookie length" + LoginActivity.msCookieManager.getCookieStore().getCookies().size());
+                Log.e(TAG,"Cookie"+LoginActivity.msCookieManager.getCookieStore().getCookies());
                 if (LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
                     //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
                     connection.setRequestProperty("Cookie",
                             TextUtils.join(";", LoginActivity.msCookieManager.getCookieStore().getCookies()));
+                }
+                else{
                 }
             }
            connection.connect();
@@ -145,8 +157,6 @@ public class JSONParserforHttps {
                 Log.e(TAG, "error in DataOutputStream ");
                 e.printStackTrace();
             } if(firstConnection) {
-                // msCookieManager.getInstance().setAcceptCookie(true);
-                // cookieHandler.setDefault(msCookieManager);
                 headerFields = connection.getHeaderFields();
                 Log.e(TAG, connection.getHeaderFields().toString());
                 try {
@@ -159,7 +169,15 @@ public class JSONParserforHttps {
                         if (cookiesHeader != null) {
                             try {
                                 for (String cookie : cookiesHeader) {
+                                    int i=0;
                                     LoginActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                                    Log.e("adding to cookieManager", "i " + i + " " + HttpCookie.parse(cookie).get(0));
+                                    i++;
+//adding to mscookie manager from shared preerence
+
+                                Log.e(TAG,"session"+LoginActivity.msCookieManager.getCookieStore().getCookies());
+
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -167,11 +185,13 @@ public class JSONParserforHttps {
                             }
                         }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "error=======");
                 }
                 firstConnection = false;
+                //firstConnection= !(LoginActivity.isLoginStatus);
             }
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
@@ -181,7 +201,6 @@ public class JSONParserforHttps {
                     br.close();
                     sb.toString();
                     Log.e(TAG, "Json String " + sb.toString());
-
         }catch (Exception e) {
             Log.e(TAG, "error in connection.connect");
             e.printStackTrace();
@@ -221,8 +240,6 @@ public class JSONParserforHttps {
             e.printStackTrace();
             Log.e(TAG, "error in connection.connect");
         }
-       // fileLength = connection.getContentLength();
-        //Log.e(TAG, "Length of file to be downloded" + ReadingMagazine.fileLength);
         input = new BufferedInputStream(urlMagDownload.openStream());
             return input;
     }
@@ -271,13 +288,13 @@ public class JSONParserforHttps {
                     Log.e("HTTPS connection : ","Json String "+ sb2.toString());
             }
         }catch(Exception e){
-            Log.e(TAG,"inputstream error ");
+            Log.e(TAG, "inputstream error ");
             e.printStackTrace();
         }
 
         try {
             JSONArray jarray = new JSONArray(sb2.toString());
-            Log.e(TAG,"jarray"+jarray);
+            Log.e(TAG, "jarray" + jarray);
             return  jarray;
         }catch (Exception e){
             e.printStackTrace();
@@ -293,11 +310,12 @@ public class JSONParserforHttps {
             connection=(HttpsURLConnection)url.openConnection();
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG,"Error in url connection in GETJSONARRAY");
+            Log.e(TAG, "Error in url connection in GETJSONARRAY");
         }
         try{
             connection.setRequestMethod("POST");
             if(firstConnection==false){
+               // settingSessionfromSharedPreference();
             if(LoginActivity.msCookieManager.getCookieStore().getCookies().size() > 0)
             {
                 //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
@@ -341,38 +359,15 @@ public class JSONParserforHttps {
         return jarrayofMagazines;
     }
 
-}
 
-        /*try{
-            DataOutputStream wr = new DataOutputStream( connection.getOutputStream());
-            wr.writeBytes(paramString);
-        }catch (Exception e) {
-            Log.e(TAG, "error in DataOutputStream ");
-            e.printStackTrace();
-        }*/
 
-//getting response from server
-       /* try{
-            int status = connection.getResponseCode();
-            Log.e(TAG,"status"+status);
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    br.close();
-                    sb.toString();
-                    Log.e("HTTPS connection : ","Json String "+ sb.toString());
-            }
-        }catch(Exception e){
-            Log.e(TAG,"inputstream error ");
-            e.printStackTrace();
+    void settingSessionfromSharedPreference(){
+        if(LoginActivity.msCookieManager.getCookieStore().getCookies().size()==0) {
+            sessionIdSP = LoginActivity.sessionIdfrmSharedPrefernce;
+            String ex;
+            ex = sessionIdSP.substring((sessionIdSP.indexOf("[") + 1), sessionIdSP.indexOf(", P"));
+            Log.e("Extractedvstr PHPSSID", ex);
+            LoginActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(ex).get(0));
         }
-*/
-
-
-
-
+    }
+}

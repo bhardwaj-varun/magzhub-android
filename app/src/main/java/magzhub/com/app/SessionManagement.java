@@ -3,6 +3,7 @@ package magzhub.com.app;
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 
 /**
  * Created by Dell on 18-Jan-16.
@@ -19,8 +20,7 @@ public class SessionManagement {
     private static final String IS_LOGIN="IsLoggedIn";
     public static final String KEY_USERID = "keyUserId";
     public static final String KEY_FULLNAME = "keyFullName";
-    public static final String KEY_EmailId = "keyEmailId";
-
+    public static final String KEY_SERVER_SESSION_ID = "keySessionId";
 
     public SessionManagement(Context context){
         this.context= context;
@@ -28,12 +28,15 @@ public class SessionManagement {
         editor = preferences.edit();
     }
 
-    public void createLoginSession(int userId){
+    public void createLoginSession(int userId,String cookies){
         // Storing login value as TRUE
+        //Setting cookies or session id in shared preference
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
         editor.putInt(KEY_USERID, userId);
+        editor.putString(KEY_SERVER_SESSION_ID,cookies);
+//managing session if first connenction
 
         // commit changes
         editor.commit();
@@ -60,10 +63,8 @@ public class SessionManagement {
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(_context, Launcher.class);
             // Closing all the Activities
-            //i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             // Add new Flag to start new Activity
-         //   i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             // Staring Login Activity
             _context.startActivity(i);
@@ -80,7 +81,11 @@ public class SessionManagement {
     {
         return preferences.getInt(KEY_USERID,0);
     }
-
+    public String getServerSessoinId(){
+        return preferences.getString(KEY_SERVER_SESSION_ID, "");}
+    public Boolean getIsLoginStatus(){
+        return  preferences.getBoolean(IS_LOGIN,false);
+    }
     public String getProfileDetail()
     {
         String profileDetail;

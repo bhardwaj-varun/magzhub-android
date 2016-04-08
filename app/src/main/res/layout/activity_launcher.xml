@@ -30,6 +30,7 @@
         android:layout_below="@+id/magzhub_logo"
         android:id="@+id/btn_login"
         android:text="Login"
+        android:textColor="@color/btn_Text_white"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:background="@color/btn_background"

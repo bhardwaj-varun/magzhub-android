@@ -17,6 +17,7 @@
     <color name="selected_gray">#ffdbdbdb</color>
     <color name="activitiesBackground">#F1F1F1</color>
     <color name="btn_background">#3F51B5</color>
+    <color name="btn_Text_white">#FFFFFF</color>
     <!--<color name="btn_background">#83CAD1</color>-->
     <color name="text_color">#FFFFFF</color>
 </resources>
